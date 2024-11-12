@@ -11,6 +11,7 @@ import wave1 from "../assets/images/wave7.png";
 
 export default function LandingScreen() {
   const [tasks, setTasks] = useState([]);
+  const [filteredTasks, setFilteredTasks] = useState([]);
   const [taskDetails, setTaskDetails] = useState({
     name: "",
     time: "",
@@ -18,14 +19,15 @@ export default function LandingScreen() {
     notifications: false,
   });
   const [showCompleted, setShowCompleted] = useState(false); // Track toggle state
-
   // Fetch tasks from the API
   useEffect(() => {
+    console.log(showCompleted);
     const fetchTasks = async () => {
       try {
         const response = await fetch("https://agewell.onrender.com/api/tasks/");
         const data = await response.json();
         setTasks(data);
+        setFilteredTasks(data.filter((task) => !task.taskFinished));
       } catch (error) {
         console.error("Error fetching tasks:", error);
       }
@@ -33,20 +35,54 @@ export default function LandingScreen() {
     fetchTasks();
   }, []);
 
+  useEffect(() => {
+    console.log("hello?");
+    let arr = tasks.filter((task) =>
+      showCompleted ? task.taskFinished : !task.taskFinished
+    );
+    setFilteredTasks(arr);
+  }, [showCompleted]);
   // Memoize filtered tasks based on toggle state
-  const filteredTasks = useMemo(() => {
+  const filteredTask = useMemo(() => {
     return tasks.filter((task) =>
       showCompleted ? task.taskFinished : !task.taskFinished
     );
   }, [tasks, showCompleted]);
 
+  const updateTaskStatus = async (taskName, isChecked) => {
+    console.log(taskName, isChecked);
+    try {
+      const response = await fetch(
+        "https://agewell.onrender.com/api/tasks/update",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: taskName,
+            taskFinished: isChecked,
+          }),
+        }
+      );
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Task updated successfully:", data);
+      } else {
+        console.error("Failed to update task:", data.message);
+      }
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
+  };
   // Function to send a POST request
   const sendTaskRequest = async (taskText) => {
     if (!taskText.trim()) return; // Don't send request if input is empty
 
     // Define default values for the other fields
     const defaultTaskDetails = {
-      time: "14:00", // Default time
+      time: "03:18", // Default time
       taskFinished: false, // Default value for taskFinished
       notifications: true, // Default value for notifications
     };
@@ -86,7 +122,10 @@ export default function LandingScreen() {
     sendTaskRequest(taskDetails.name); // Send request with task name
     setTaskDetails({ ...taskDetails, name: "" }); // Clear input field after submitting
   };
-
+  const updateToggle = () => {
+    console.log(":(");
+    setShowCompleted((prev) => !prev);
+  };
   return (
     <View style={styles.mainContainer}>
       <View style={styles.waveContainer1}>
@@ -112,7 +151,7 @@ export default function LandingScreen() {
           toggleText1="Tasks"
           toggleText2="Done"
           isToggled={showCompleted}
-          onToggle={() => setShowCompleted((prev) => !prev)}
+          onToggle={() => updateToggle(showCompleted)}
         />
       </View>
 
@@ -123,6 +162,7 @@ export default function LandingScreen() {
             key={task._id}
             taskText={task.name}
             isChecked={task.taskFinished}
+            onToggle={(isChecked) => updateTaskStatus(task.name, isChecked)}
           />
         ))}
       </View>
