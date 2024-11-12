@@ -1,8 +1,6 @@
 import { Dimensions, StyleSheet, TextInput } from "react-native";
-
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-
 import CustomToggle from "@/components/CustomToggle";
 import TaskWithCheckbox from "@/components/TaskCheckbox";
 import { TouchableOpacity, View } from "react-native";
@@ -36,31 +34,56 @@ export default function LandingScreen() {
 
   // Memoize filtered tasks based on toggle state
   const filteredTasks = useMemo(() => {
-    console.log("aaaa");
-
     return tasks.filter((task) =>
       showCompleted ? task.taskFinished : !task.taskFinished
     );
   }, [tasks, showCompleted]);
 
   // Function to send a POST request
-  const sendTaskRequest = async (text) => {
+  const sendTaskRequest = async (taskText) => {
+    if (!taskText.trim()) return; // Don't send request if input is empty
+
+    // Define default values for the other fields
+    const defaultTaskDetails = {
+      time: "14:00", // Default time
+      taskFinished: false, // Default value for taskFinished
+      notifications: true, // Default value for notifications
+    };
+
+    // Prepare the task data to send
+    const taskData = {
+      name: taskText,
+      ...defaultTaskDetails, // Spread default task details
+    };
+
     try {
-      const response = await fetch("http://localhost:4000/api/tasks/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ task: text }), // Send task text in request body as JSON
-      });
+      const response = await fetch(
+        "https://agewell.onrender.com/api/tasks/add",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(taskData), // Send task data with defaults
+        }
+      );
       if (!response.ok) {
         console.error("Error:", response.statusText);
       }
       const data = await response.json();
       console.log("Response data:", data);
+
+      // Optionally update tasks state here after adding the task
+      setTasks((prevTasks) => [...prevTasks, data]); // Assuming API returns the newly added task
     } catch (error) {
       console.error("Error:", error);
     }
+  };
+
+  // Handle add task button click
+  const handleAddTask = () => {
+    sendTaskRequest(taskDetails.name); // Send request with task name
+    setTaskDetails({ ...taskDetails, name: "" }); // Clear input field after submitting
   };
 
   return (
@@ -73,7 +96,7 @@ export default function LandingScreen() {
       {/* Toggle between "Task" and "Done" */}
       <View>
         <CustomToggle
-          toggleText1="Task"
+          toggleText1="Tasks"
           toggleText2="Done"
           isToggled={showCompleted}
           onToggle={() => setShowCompleted((prev) => !prev)}
@@ -99,7 +122,7 @@ export default function LandingScreen() {
         onChangeText={(text) => setTaskDetails({ ...taskDetails, name: text })}
       />
       <View style={styles.addButtonContainer}>
-        <TouchableOpacity style={styles.addButton}>
+        <TouchableOpacity style={styles.addButton} onPress={handleAddTask}>
           <Icon name="plus" size={24} color="white" />
         </TouchableOpacity>
       </View>
@@ -114,8 +137,8 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: "#f5fbf3",
-    paddingTop: 40, // Adds space at the top of the screen (adjust as needed)
-    paddingHorizontal: 16, // Adds some padding on the left and right
+    paddingTop: 40,
+    paddingHorizontal: 16,
   },
   titleContainer: {
     flexDirection: "row",
@@ -124,62 +147,57 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
   tasksContainer: {
-    width: "80%", // 90% of the screen width
-    height: width * 0.8, // Fixed height of 20 (you can adjust this if needed)
-    borderWidth: 2, // Black 2px border
-    borderColor: "#748a7c", // Set the border color to black
-    borderRadius: 10, // Border radius for rounded corners (adjust as needed)
-    marginHorizontal: "10%", // To center the container horizontally, using 5% on both sides
-    paddingHorizontal: "8%", // To center the container horizontally, using 5% on both sides
-    paddingVertical: "10%", // To center the container horizontally, using 5% on both sides
+    width: "80%",
+    height: width * 0.8,
+    borderWidth: 2,
+    borderColor: "#748a7c",
+    borderRadius: 10,
+    marginHorizontal: "10%",
+    paddingHorizontal: "8%",
+    paddingVertical: "10%",
     backgroundColor: "#f5fbf3",
     marginTop: 50,
-
-    // iOS Shadow
-    shadowColor: "#000", // Shadow color (black)
-    shadowOffset: { width: 0, height: 4 }, // Shadow position (move down by 4px)
-    shadowOpacity: 0.3, // Shadow opacity (0 to 1, where 1 is fully opaque)
-    shadowRadius: 6, // Radius of the shadow blur (larger number = softer shadow)
-
-    // Android Shadow
-    elevation: 5, // Elevation for Android (higher number = more intense shadow)
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 5,
   },
   inputBox: {
-    backgroundColor: "#fff", // White background for the input box
-    width: "80%", // 80% of the screen width
-    height: 50, // Height of the input box
-    borderRadius: 25, // Pill shape
-    paddingLeft: 16, // Padding to make text not touch the edges
-    // marginTop: 100, // Spacing above the input box
-    position: "absolute", // Positioning it absolutely
-    bottom: 90, // 20px from the bottom
-    alignSelf: "center", // Center it horizontally
-    fontSize: 16, // Text size for input
-    shadowColor: "#000", // Shadow color
-    shadowOffset: { width: 0, height: 4 }, // Shadow position
-    shadowOpacity: 0.1, // Shadow opacity
-    shadowRadius: 6, // Shadow blur radius
-    elevation: 5, // Android shadow elevation
+    backgroundColor: "#fff",
+    width: "80%",
+    height: 50,
+    borderRadius: 25,
+    paddingLeft: 16,
+    position: "absolute",
+    bottom: 90,
+    alignSelf: "center",
+    fontSize: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 5,
   },
   addButtonContainer: {
-    position: "absolute", // Positioning it absolutely
-    bottom: 20, // 20px from the bottom
-    left: "50%", // Center horizontally
-    transform: [{ translateX: -10 }], // Offset to truly center (half of button's width)
+    position: "absolute",
+    bottom: 20,
+    left: "50%",
+    transform: [{ translateX: -10 }],
     alignItems: "center",
     justifyContent: "center",
   },
   addButton: {
     backgroundColor: "#4caf50",
-    borderRadius: 50, // Set this to half the button's size for a perfect circle
-    width: 50, // Set a fixed width for the button
-    height: 50, // Set a fixed height to match the width (circular shape)
+    borderRadius: 50,
+    width: 50,
+    height: 50,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#000", // Shadow color
-    shadowOffset: { width: 0, height: 4 }, // Shadow position
-    shadowOpacity: 0.3, // Shadow opacity
-    shadowRadius: 6, // Shadow blur radius
-    elevation: 8, // Android shadow elevation
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 8,
   },
 });
