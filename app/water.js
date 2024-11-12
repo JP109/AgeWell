@@ -4,9 +4,21 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Image,
 } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Picker } from "@react-native-picker/picker"; // Correct import
+import water from "../assets/images/water.png";
+import wave1 from "../assets/images/mesh.png";
+import wave2 from "../assets/images/Vector2.png";
+import wave3 from "../assets/images/Vector1.png";
+import {
+  ProgressCircle,
+  CircularProgressWithChild,
+} from "react-native-circular-progress-indicator";
+import * as ProgressIndicator from "react-native-circular-progress-indicator";
+// console.log("AAHN", ProgressIndicator); // Check what is being exported
+
 // import ProgressCircle from "react-native-progress-circle"; // Correct import
 
 // import LinearGradient from "react-native-linear-gradient";
@@ -14,15 +26,56 @@ import { Picker } from "@react-native-picker/picker"; // Correct import
 
 export default function WaterScreen() {
   const [selectedValue, setSelectedValue] = useState("1");
+
+  const [currentTime, setCurrentTime] = useState(() => {
+    const date = new Date();
+    return date
+      .toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
+      .toUpperCase();
+  });
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      const date = new Date();
+      setCurrentTime(
+        date
+          .toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          })
+          .toUpperCase()
+      );
+    }, 1000); // Update every 1 second
+
+    return () => clearInterval(intervalId);
+  }, []);
   return (
     <View
       style={styles.mainContainer} // Apply the gradient to the main container
     >
+      <View style={styles.waveContainer1}>
+        <Image source={wave1} style={styles.waveImage} />
+      </View>
+      <View style={styles.waveContainer2}>
+        <Image source={wave1} style={styles.waveImage} />
+      </View>
+      <View style={styles.waveContainer3}>
+        <Image source={wave1} style={styles.waveImage} />
+      </View>
       <View style={styles.profileContainer}>
+        {/* <View style={styles.waveContainer4}> */}
+        <Image source={wave2} style={styles.waveImage2} />
+        <Image source={wave3} style={styles.waveImage3} />
+        {/* </View> */}
         {/* Left column */}
         <View style={styles.leftColumn}>
           <View style={styles.row}>
-            <Text style={styles.titleText}>Title 1</Text>
+            <Text style={styles.titleText}>{currentTime}</Text>
             <Text style={styles.subtitleText}>Subtitle 1</Text>
             <TouchableOpacity style={styles.pillButton}>
               <Text style={styles.pillButtonText}>Record Hyrdation</Text>
@@ -35,17 +88,24 @@ export default function WaterScreen() {
           <View style={styles.circle}>
             {/* Replace with your image source */}
             {/* <Image source={{ uri: "https://example.com/your-image.jpg" }} style={styles.circleImage} /> */}
+            <Image source={water} style={styles.circleImage} />
+            <Image source={water} style={styles.circleImage2} />
           </View>
         </View>
       </View>
 
       <View style={styles.waterConsumed}>
         <View style={styles.largerCircle}>
+          <View style={styles.waveContainer4}>
+            <Image source={wave2} style={styles.waveImage4} />
+          </View>
+          <View style={styles.waveContainer5}>
+            <Image source={wave3} style={styles.waveImage5} />
+          </View>
           {/* Replace with your image source */}
           {/* <Image source={{ uri: "https://example.com/your-image.jpg" }} style={styles.circleImage} /> */}
         </View>
       </View>
-
       <View style={styles.newView}>
         <View style={styles.pickerContainer}>
           <Text style={styles.targetLabel}>Target</Text>
@@ -60,23 +120,30 @@ export default function WaterScreen() {
             <Picker.Item label="3" value="3" />
           </Picker>
         </View>
-
-        {/* <ProgressCircle
-          percent={selectedValue === "1" ? 30 : selectedValue === "2" ? 60 : 90}
-          radius={50}
-          borderWidth={8}
-          color="#e74c3c"
-          shadowColor="#999"
-          bgColor="#fff"
-        >
-          <Text style={{ fontSize: 18 }}>
-            {selectedValue === "1"
-              ? "30%"
-              : selectedValue === "2"
-              ? "60%"
-              : "90%"}
-          </Text>
-        </ProgressCircle> */}
+        <Text style={styles.progressText}>Goal Preview</Text>
+        <View style={styles.progressContainer}>
+          <CircularProgressWithChild
+            value={selectedValue === "1" ? 30 : selectedValue === "2" ? 60 : 90} // Use 'value' prop instead of 'percent'
+            radius={50}
+            duration={1000} // Optional: Animation duration
+            strokeWidth={8}
+            rotation={0}
+            lineCap="round"
+            activeStrokeColor="#62cdfa"
+            inActiveStrokeColor="#ddd"
+            activeStrokeWidth={10}
+            inActiveStrokeWidth={8}
+            bgcolor="#fff"
+          >
+            <Text style={styles.percentText}>
+              {selectedValue === "1"
+                ? "30%"
+                : selectedValue === "2"
+                ? "60%"
+                : "90%"}
+            </Text>
+          </CircularProgressWithChild>
+        </View>
       </View>
     </View>
   );
@@ -92,6 +159,10 @@ const styles = StyleSheet.create({
     paddingTop: 40, // Adds space at the top of the screen (adjust as needed)
     paddingHorizontal: 16, // Adds some padding on the left and right
   },
+  backgroundImage: {
+    zIndex: -1,
+    width: width * 0.4,
+  },
   profileContainer: {
     width: "90%", // 90% of the screen width
     height: width * 0.5, // Fixed height of 20 (you can adjust this if needed)
@@ -104,6 +175,8 @@ const styles = StyleSheet.create({
 
     display: "flex",
     flexDirection: "row",
+    position: "relative",
+    overflow: "hidden",
   },
   leftColumn: {
     flex: 2, // Takes up the remaining space
@@ -124,20 +197,37 @@ const styles = StyleSheet.create({
     height: 120, // Increased size of the circle (previously was 100)
     borderRadius: 60, // Make it a perfect circle (half of the width/height)
     overflow: "hidden", // Ensures the image stays within the circle
-    borderWidth: 2, // Optional: Add a border to the circle
-    borderColor: "#ccc", // Optional: Circle border color
+    // borderWidth: 2, // Optional: Add a border to the circle
+    // borderColor: "#ccc", // Optional: Circle border color
+    position: "relative",
+
+    // display: "flex",
+    // justifyContent: "center",
+    // alignItems: "center",
+    overflow: "visible",
   },
   circleImage: {
+    width: "500%",
+    height: "200%",
+    resizeMode: "cover", // Ensures the image covers the whole circle
+    position: "absolute",
+    bottom: -90,
+    left: -250,
+  },
+  circleImage2: {
     width: "100%",
     height: "100%",
     resizeMode: "cover", // Ensures the image covers the whole circle
+    position: "absolute",
+    bottom: 30,
+    left: 25,
   },
   titleText: {
     fontSize: 18,
     fontWeight: "bold",
   },
   subtitleText: {
-    fontSize: 14,
+    fontSize: 18,
     color: "#6e7880",
   },
   pillButton: {
@@ -153,6 +243,8 @@ const styles = StyleSheet.create({
   pillButtonText: {
     color: "#000", // White text color for contrast
     fontSize: 13, // Font size for the text
+    color: "#79838b",
+    fontWeight: "bold",
   },
   waterConsumed: {
     justifyContent: "center",
@@ -164,24 +256,8 @@ const styles = StyleSheet.create({
     // borderColor: "red", // Set the border color to black
     // borderRadius: 10, // Border radius for rounded corners (adjust as needed)
   },
-  largerCircle: {
-    width: 160, // Increased size of the circle (previously was 100)
-    height: 160, // Increased size of the circle (previously was 100)
-    borderRadius: 80, // Make it a perfect circle (half of the width/height)
-    overflow: "hidden", // Ensures the image stays within the circle
-    borderWidth: 2, // Optional: Add a border to the circle
-    borderColor: "#ccc", // Optional: Circle border color
-  },
   newView: {
-    // backgroundColor: "#fff",
     padding: 20,
-    // borderRadius: 15,
-    // shadowColor: "#000",
-    // shadowOffset: { width: 0, height: 4 },
-    // shadowOpacity: 0.3,
-    // shadowRadius: 6,
-    // elevation: 5,
-    // marginBottom: 20,
     alignItems: "flex-end",
   },
   targetLabel: {
@@ -190,21 +266,177 @@ const styles = StyleSheet.create({
     // fontWeight: "bold",
     // marginBottom: 10,
   },
-  // picker: {
-  //   width: width * 0.3, // 30% of screen width
-  //   backgroundColor: "#51bff2", // Blue background for the picker
-  //   color: "#fff", // White text color
-  //   borderRadius: 20, // Rounded corners
-  // },
   pickerContainer: {
     backgroundColor: "#51bff2", // Blue background for the picker container
-    borderRadius: 8, // Rounded corners for the container
+    borderRadius: 18, // Rounded corners for the container
     padding: 10, // Padding to create space inside the container
-    width: width * 0.4, // 30% of the screen width
-    height: 70,
+    width: width * 0.35, // 30% of the screen width
+    height: 80,
   },
   picker: {
     width: "100%",
     color: "#fff", // White text color for the items in the picker
+  },
+  waveContainer1: {
+    position: "absolute",
+    top: 0,
+    right: -100,
+    zIndex: -1, // Place behind the main content
+    justifyContent: "center",
+    alignItems: "center",
+
+    width: width * 0.93,
+    height: height * 0.3,
+  },
+  waveContainer2: {
+    position: "absolute",
+    top: 200,
+    left: -100,
+    zIndex: -1, // Place behind the main content
+    justifyContent: "center",
+    alignItems: "center",
+
+    width: width * 0.93,
+    height: height * 0.3,
+  },
+  waveContainer3: {
+    position: "absolute",
+    right: -150,
+    bottom: 10,
+    zIndex: -1, // Place behind the main content
+    justifyContent: "center",
+    alignItems: "center",
+
+    width: width,
+    height: height * 0.4,
+  },
+  waveImage: {
+    width: "100%", // Cover the full width of the container
+    height: "100%", // Cover the full height of the container
+    resizeMode: "contain", // Ensure the image covers the container without distortion
+    borderRadius: 10, // Optional: Add rounded corners if needed
+  },
+  waveContainer4: {
+    width: "100%", // 90% of the screen width
+    height: width * 0.5, // Fixed height of 20 (you can adjust this if needed)
+    borderWidth: 2, // Optional: Add a border to the circle
+    borderColor: "red", // Optional: Circle border color
+
+    position: "absolute",
+    top: 0,
+    zIndex: -1, // Place behind the main content
+  },
+  waveImage2: {
+    width: "400%", // Cover the full width of the container
+    height: "400%", // Cover the full height of the container
+    resizeMode: "contain", // Ensure the image covers the container without distortion
+
+    // borderWidth: 2, // Optional: Add a border to the circle
+    // borderColor: "blue", // Optional: Circle border color
+
+    position: "absolute",
+    bottom: -300,
+    left: -100,
+  },
+  waveImage3: {
+    width: "400%", // Cover the full width of the container
+    height: "400%", // Cover the full height of the container
+    resizeMode: "contain", // Ensure the image covers the container without distortion
+
+    // borderWidth: 2, // Optional: Add a border to the circle
+    // borderColor: "blue", // Optional: Circle border color
+
+    position: "absolute",
+    bottom: -200,
+    left: -100,
+  },
+  largerCircle: {
+    width: 180, // Increased size of the circle (previously was 100)
+    height: 180, // Increased size of the circle (previously was 100)
+    borderRadius: 90, // Make it a perfect circle (half of the width/height)
+    overflow: "hidden", // Ensures the image stays within the circle
+    borderWidth: 7, // Optional: Add a border to the circle
+    borderColor: "#ade5fc", // Blue border color
+    backgroundColor: "#f3f9fb",
+  },
+  waveContainer4: {
+    position: "absolute",
+    top: 20,
+    left: -50,
+    zIndex: -1, // Place behind the main content
+    justifyContent: "center",
+    alignItems: "center",
+
+    width: width,
+    height: height * 0.3,
+
+    // borderWidth: 7, // Optional: Add a border to the circle
+    // borderColor: "red", // Blue border color
+    transform: [{ rotate: "-20deg" }],
+  },
+  waveContainer5: {
+    position: "absolute",
+    right: -30,
+    top: 10,
+    zIndex: -1, // Place behind the main content
+    justifyContent: "center",
+    alignItems: "center",
+    width: width,
+    height: height * 0.3,
+    // borderWidth: 7, // Optional: Add a border to the circle
+    // borderColor: "pink", // Blue border color
+    transform: [{ rotate: "25deg" }], // Rotate by 30 degrees
+  },
+  waveImage4: {
+    width: "100%", // Cover the full width of the container
+    height: "100%", // Cover the full height of the container
+    resizeMode: "contain", // Ensure the image covers the container without distortion
+
+    // borderWidth: 2, // Optional: Add a border to the circle
+    // borderColor: "blue", // Optional: Circle border color
+
+    position: "absolute",
+    // bottom: -300,
+    left: -30,
+  },
+  waveImage5: {
+    width: "100%", // Cover the full width of the container
+    height: "100%", // Cover the full height of the container
+    resizeMode: "contain", // Ensure the image covers the container without distortion
+
+    // borderWidth: 2, // Optional: Add a border to the circle
+    // borderColor: "blue", // Optional: Circle border color
+
+    position: "absolute",
+    // bottom: -200,
+    // left: -100,
+  },
+  percentText: {
+    fontSize: 18,
+    color: "#333", // Set text color for better contrast
+    fontWeight: "bold", // Make the text bold
+  },
+  waterConsumed: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+    maxHeight: height * 0.3,
+  },
+  percentText: {
+    fontSize: 18,
+    color: "#333", // Set text color for better contrast
+    fontWeight: "bold", // Make the text bold
+  },
+  progressText: {
+    position: "absolute",
+    left: 10,
+    bottom: 70,
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  progressContainer: {
+    position: "absolute",
+    left: 10,
+    bottom: -40,
   },
 });

@@ -14,12 +14,16 @@ const CustomToggle = () => {
   const [isTaskDone, setIsTaskDone] = useState(false);
   const [position] = useState(new Animated.Value(0)); // Position for sliding effect
 
+  // Toggle function that changes the task state and triggers the animation
   const toggleSwitch = () => {
-    setIsTaskDone(!isTaskDone);
+    const newState = !isTaskDone; // Toggle the state
 
-    // Trigger the slide animation
+    // Update the state first
+    setIsTaskDone(newState);
+
+    // Trigger the slide animation based on the new state
     Animated.timing(position, {
-      toValue: isTaskDone ? 0 : width * 0.45, // Move the slider to the appropriate position
+      toValue: newState ? width * 0.45 : 0, // If task is done, slide to 0.45 width, else go back to 0
       duration: 300, // Duration of the animation
       useNativeDriver: true, // Use native driver for better performance
     }).start();
