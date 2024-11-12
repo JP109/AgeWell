@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   TextInput,
@@ -8,52 +8,14 @@ import {
   Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
-import * as Notifications from "expo-notifications";
-import * as Device from "expo-device";
 
 export default function LoginPage() {
   const [username, setUsername] = useState(""); // This will be the email
   const [password, setPassword] = useState("");
   const router = useRouter();
-  const [pushToken, setPushToken] = useState(null);
-
-  useEffect(() => {
-    registerForPushNotifications();
-  }, []);
-
-  // Function to get the push token
-  const registerForPushNotifications = async () => {
-    console.log("hi",Device.isDevice)
-    if (Device.isDevice) {
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
-
-      if (existingStatus !== "granted") {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-      console.log(existingStatus,35);
-      if (finalStatus !== "granted") {
-        Alert.alert("Failed to get push token for push notification!");
-        return;
-      }
-      try {
-        const token = await Notifications.getExpoPushTokenAsync({
-          projectId: '2ef46b82-61a0-4480-80f2-896524cab418',
-          applicationId: 'agewell', // Replace with your actual application ID
-        });
-        console.log("Push token:", token);
-        setPushToken(token?.data);
-        console.log(token, 44);
-      } catch (error) {
-        console.error("Error fetching Expo push token:", error);
-      }
-    } else {
-      Alert.alert("Must use physical device for Push Notifications");
-    }
-  };
 
   const handleLogin = async () => {
+    // Simple validation before login
     if (username && password) {
       try {
         // API login call
@@ -65,23 +27,26 @@ export default function LoginPage() {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              email: username,
+              email: username, // Username is being used as the email
               password: password,
-              pushToken, // Send pushToken to your server
             }),
           }
         );
-        console.log(pushToken,68);
 
         const data = await response.json();
 
+        // Handle response
         if (response.ok) {
+          // Login success
           console.log("Login successful:", data);
+          // Optionally store tokens or user data here
           router.push("/home");
         } else {
+          // Login failed, show error message
           Alert.alert("Login failed", data.message || "Something went wrong.");
         }
       } catch (error) {
+        // Handle network or other errors
         console.error("Error during login:", error);
         Alert.alert("Error", "Unable to connect. Please try again.");
       }

@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, TextInput } from "react-native";
+import { Dimensions, StyleSheet, TextInput, Image, Text } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import CustomToggle from "@/components/CustomToggle";
@@ -7,10 +7,10 @@ import { TouchableOpacity, View } from "react-native";
 // @ts-ignore
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useEffect, useState, useMemo } from "react";
+import wave1 from "../assets/images/wave7.png";
 
 export default function LandingScreen() {
   const [tasks, setTasks] = useState([]);
-  const [filteredTasks, setFilteredTasks] = useState([]);
   const [taskDetails, setTaskDetails] = useState({
     name: "",
     time: "",
@@ -18,15 +18,14 @@ export default function LandingScreen() {
     notifications: false,
   });
   const [showCompleted, setShowCompleted] = useState(false); // Track toggle state
+
   // Fetch tasks from the API
   useEffect(() => {
-    console.log(showCompleted);
     const fetchTasks = async () => {
       try {
         const response = await fetch("https://agewell.onrender.com/api/tasks/");
         const data = await response.json();
         setTasks(data);
-        setFilteredTasks(data.filter((task) =>!task.taskFinished));
       } catch (error) {
         console.error("Error fetching tasks:", error);
       }
@@ -34,51 +33,20 @@ export default function LandingScreen() {
     fetchTasks();
   }, []);
 
-  useEffect(()=>{
-    console.log("hello?")
-    let arr = tasks.filter((task) =>
-      showCompleted ? task.taskFinished : !task.taskFinished
-    );
-    setFilteredTasks(arr);
-  },[showCompleted])
   // Memoize filtered tasks based on toggle state
-  const filteredTask = useMemo(() => {
+  const filteredTasks = useMemo(() => {
     return tasks.filter((task) =>
       showCompleted ? task.taskFinished : !task.taskFinished
     );
   }, [tasks, showCompleted]);
 
-  const updateTaskStatus = async (taskName, isChecked) => {
-    console.log(taskName,isChecked)
-    try {
-      const response = await fetch('https://agewell.onrender.com/api/tasks/update', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: taskName,
-          taskFinished: isChecked,
-        }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        console.log('Task updated successfully:', data);
-      } else {
-        console.error('Failed to update task:', data.message);
-      }
-    } catch (error) {
-      console.error('Error updating task:', error);
-    }
-  };
   // Function to send a POST request
   const sendTaskRequest = async (taskText) => {
     if (!taskText.trim()) return; // Don't send request if input is empty
 
     // Define default values for the other fields
     const defaultTaskDetails = {
-      time: "03:18", // Default time
+      time: "14:00", // Default time
       taskFinished: false, // Default value for taskFinished
       notifications: true, // Default value for notifications
     };
@@ -118,16 +86,25 @@ export default function LandingScreen() {
     sendTaskRequest(taskDetails.name); // Send request with task name
     setTaskDetails({ ...taskDetails, name: "" }); // Clear input field after submitting
   };
-  const updateToggle = () => {
-    console.log(":(");
-    setShowCompleted((prev) => !prev)
-  }
+
   return (
     <View style={styles.mainContainer}>
-      <ThemedView style={styles.titleContainer} lightColor="#f5fbf3">
-        <ThemedText type="title">Daily Log</ThemedText>
+      <View style={styles.waveContainer1}>
+        <Image source={wave1} style={styles.waveImage} />
+      </View>
+      <View style={styles.waveContainer2}>
+        <Image source={wave1} style={styles.waveImage} />
+      </View>
+      <View style={styles.waveContainer3}>
+        <Image source={wave1} style={styles.waveImage} />
+      </View>
+      <View style={styles.titleContainer} lightColor="#f5fbf3">
+        <Text type="title" style={styles.titleText}>
+          {" "}
+          Daily Log
+        </Text>
         <Icon name="clock-o" size={20} color="#000" />
-      </ThemedView>
+      </View>
 
       {/* Toggle between "Task" and "Done" */}
       <View>
@@ -135,7 +112,7 @@ export default function LandingScreen() {
           toggleText1="Tasks"
           toggleText2="Done"
           isToggled={showCompleted}
-          onToggle={() => updateToggle(showCompleted)}
+          onToggle={() => setShowCompleted((prev) => !prev)}
         />
       </View>
 
@@ -146,7 +123,6 @@ export default function LandingScreen() {
             key={task._id}
             taskText={task.name}
             isChecked={task.taskFinished}
-            onToggle={(isChecked) => updateTaskStatus(task.name, isChecked)}
           />
         ))}
       </View>
@@ -163,14 +139,95 @@ export default function LandingScreen() {
           <Icon name="plus" size={24} color="white" />
         </TouchableOpacity>
       </View>
+      {/* <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.inputField}
+          placeholder="Enter your task..."
+          placeholderTextColor="#6e7880" // Grey text for placeholder
+          value={taskDetails.name}
+          onChangeText={(text) =>
+            setTaskDetails({ ...taskDetails, name: text })
+          }
+        />
+
+        <View style={styles.addButtonContainer}>
+          <TouchableOpacity style={styles.addButton} onPress={handleAddTask}>
+            <Icon name="plus" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
+      </View> */}
     </View>
   );
 }
 
 // Get the screen width dynamically
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
+  waveContainer1: {
+    position: "absolute",
+    top: 0,
+    right: -100,
+    zIndex: -1, // Place behind the main content
+    justifyContent: "center",
+    alignItems: "center",
+
+    width: width * 0.93,
+    height: height * 0.3,
+  },
+  waveContainer2: {
+    position: "absolute",
+    top: 200,
+    left: -100,
+    zIndex: -1, // Place behind the main content
+    justifyContent: "center",
+    alignItems: "center",
+
+    width: width * 0.93,
+    height: height * 0.3,
+  },
+  waveContainer3: {
+    position: "absolute",
+    right: -150,
+    bottom: 10,
+    zIndex: -1, // Place behind the main content
+    justifyContent: "center",
+    alignItems: "center",
+
+    width: width,
+    height: height * 0.4,
+  },
+  waveImage: {
+    width: "100%", // Cover the full width of the container
+    height: "100%", // Cover the full height of the container
+    resizeMode: "contain", // Ensure the image covers the container without distortion
+    borderRadius: 10, // Optional: Add rounded corners if needed
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  inputField: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    padding: 10,
+    fontSize: 16,
+    flex: 1,
+  },
+  submitButton: {
+    backgroundColor: "#62cdfa",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 50,
+    marginLeft: 10,
+  },
+  submitButtonText: {
+    color: "#fff",
+    fontSize: 24, // Increased size for the "+" symbol
+    fontWeight: "bold",
+  },
   mainContainer: {
     flex: 1,
     backgroundColor: "#f5fbf3",
@@ -199,7 +256,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 6,
     elevation: 5,
-    overflow: "scroll"
+
+    overflow: "scroll",
   },
   inputBox: {
     backgroundColor: "#fff",
@@ -237,5 +295,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 6,
     elevation: 8,
+  },
+  titleText: {
+    fontSize: 25,
+    color: "#333",
+    fontWeight: "bold",
   },
 });
