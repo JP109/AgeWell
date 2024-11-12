@@ -1,13 +1,28 @@
 import { ThemedText } from "@/components/ThemedText";
 import { Dimensions, StyleSheet } from "react-native";
-import { Text } from "react-native";
+import { Text, Image } from "react-native";
 
 import { View } from "react-native";
 // import LinearGradient from "react-native-linear-gradient";
+import oldWoman from "../assets/images/oldWoman.png";
 import { LinearGradient } from "expo-linear-gradient";
+import { useState, useEffect } from "react";
 // @ts-ignore
 
 export default function ProfileScreen() {
+  const [userData, setUserData] = useState();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("https://agewell.onrender.com/api/users/");
+        const data = await response.json();
+        setUserData(data);
+      } catch (error) {
+        console.error("Error fetching userData:", error);
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <LinearGradient
       colors={["#cdf7c0", "#b6e7f5"]} // Start color and end color for the gradient
@@ -17,50 +32,45 @@ export default function ProfileScreen() {
         {/* Left column */}
         <View style={styles.leftColumn}>
           <View style={styles.row}>
-            <Text style={styles.titleText}>Title 1</Text>
-            <Text style={styles.subtitleText}>Subtitle 1</Text>
+            <Text style={styles.titleText}>Name</Text>
+            <Text style={styles.subtitleText}>{userData?.name}</Text>
           </View>
           <View style={styles.row}>
-            <Text style={styles.titleText}>Title 2</Text>
-            <Text style={styles.subtitleText}>Subtitle 2</Text>
+            <Text style={styles.titleText}>Joined</Text>
+            <Text style={styles.subtitleText}>{userData?.name}</Text>
           </View>
           <View style={styles.row}>
-            <Text style={styles.titleText}>Title 3</Text>
-            <Text style={styles.subtitleText}>Subtitle 3</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.titleText}>Title 4</Text>
-            <Text style={styles.subtitleText}>Subtitle 4</Text>
+            <Text style={styles.titleText}>Emergency Contact</Text>
+            <Text style={styles.subtitleText}>{userData?.name}</Text>
           </View>
         </View>
 
         {/* Right column with circle image */}
         <View style={styles.rightColumn}>
           <View style={styles.circle}>
-            {/* Replace with your image source */}
-            {/* <Image source={{ uri: "https://example.com/your-image.jpg" }} style={styles.circleImage} /> */}
+            <Image source={oldWoman} style={styles.circleImage} />
           </View>
         </View>
       </View>
 
       <View style={styles.vitalsGrid}>
         <View style={styles.vitalsContainer}>
-          <ThemedText type="title">7</ThemedText>
-          <ThemedText type="subtitle">Reminders</ThemedText>
+          <Text style={styles.subtitleText}>Name</Text>
+          <Text style={styles.titleText}>Name</Text>
         </View>
         <View style={styles.vitalsContainer}>
-          <ThemedText type="title">7</ThemedText>
-          <ThemedText type="subtitle">Reminders</ThemedText>
+          <Text style={styles.subtitleText}>Name</Text>
+          <Text style={styles.titleText}>Name</Text>
         </View>
       </View>
       <View style={styles.vitalsGrid}>
         <View style={styles.vitalsContainer}>
-          <ThemedText type="title">7</ThemedText>
-          <ThemedText type="subtitle">Reminders</ThemedText>
+          <Text style={styles.subtitleText}>Name</Text>
+          <Text style={styles.titleText}>Name</Text>
         </View>
         <View style={styles.vitalsContainer}>
-          <ThemedText type="title">7</ThemedText>
-          <ThemedText type="subtitle">Reminders</ThemedText>
+          <Text style={styles.subtitleText}>Name</Text>
+          <Text style={styles.titleText}>Name</Text>
         </View>
       </View>
     </LinearGradient>
@@ -74,12 +84,12 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: "#f5fbf3",
-    paddingTop: 40, // Adds space at the top of the screen (adjust as needed)
+    paddingTop: 10, // Adds space at the top of the screen (adjust as needed)
     paddingHorizontal: 16, // Adds some padding on the left and right
   },
   profileContainer: {
     width: "90%", // 90% of the screen width
-    height: width * 0.8, // Fixed height of 20 (you can adjust this if needed)
+    height: width * 0.6, // Fixed height of 20 (you can adjust this if needed)
     borderRadius: 20, // Border radius for rounded corners (adjust as needed)
     marginHorizontal: "5%", // To center the container horizontally, using 5% on both sides
     paddingHorizontal: "5%", // To center the container horizontally, using 5% on both sides
@@ -92,7 +102,7 @@ const styles = StyleSheet.create({
   },
   leftColumn: {
     flex: 1, // Takes up the remaining space
-    justifyContent: "space-between", // Distribute space between rows
+    justifyContent: "flex-start", // Distribute space between rows
   },
   row: {
     flexDirection: "column", // Makes each row have two subrows
@@ -150,5 +160,17 @@ const styles = StyleSheet.create({
 
     // Android Shadow
     elevation: 5, // Elevation for Android (higher number = more intense shadow)
+  },
+  circle: {
+    width: 135,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 1,
+    borderColor: "#ccc",
+  },
+  circleImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
   },
 });

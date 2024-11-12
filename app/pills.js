@@ -12,7 +12,7 @@ import {
   View,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import oldHag from "../assets/images/oldHag.png";
+import oldWoman from "../assets/images/oldWoman.png";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 export default function PillsScreen() {
@@ -63,7 +63,7 @@ export default function PillsScreen() {
     <View style={styles.mainContainer}>
       <View style={styles.rightColumn}>
         <View style={styles.circle}>
-          <Image source={oldHag} style={styles.circleImage} />
+          <Image source={oldWoman} style={styles.circleImage} />
         </View>
       </View>
       <Text type="title" style={styles.titleText}>

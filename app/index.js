@@ -11,8 +11,8 @@ import {
   Image,
 } from "react-native";
 import { useRouter } from "expo-router";
-import loginBg from "../assets/images/login-bg.jpg";
-import title from "../assets/images/title.jpg";
+import loginBg from "../assets/images/welcome-logo.png";
+import title from "../assets/images/title.png";
 
 export default function LandingPage() {
   const router = useRouter();
@@ -20,7 +20,7 @@ export default function LandingPage() {
   return (
     <View style={styles.container}>
       {/* <Text style={styles.title}>AgeWell</Text> */}
-      <Image source={title} style={styles.backgroundImage} />
+      <Image source={title} style={styles.titleImage} />
       <Image source={loginBg} style={styles.backgroundImage} />
       <TouchableOpacity
         style={styles.button}
@@ -52,9 +52,18 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: "#333",
   },
+  titleImage: {
+    width: "100%",
+    height: 90,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 40,
+    borderRadius: 8,
+    overflow: "hidden",
+  },
   backgroundImage: {
     width: "100%",
-    height: 200,
+    height: 280,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 40,
@@ -72,7 +81,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   button: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: "#fff",
     paddingVertical: 12,
     paddingHorizontal: 30,
     borderRadius: 8,
@@ -81,10 +90,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   signupButton: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "#fff",
+    color: "#2196F3",
   },
   buttonText: {
-    color: "#fff",
+    color: "#4CAF50",
     fontSize: 18,
     fontWeight: "600",
   },
