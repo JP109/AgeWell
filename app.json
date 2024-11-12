@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "AgeWell-app",
-    "slug": "AgeWell-app",
+    "slug": "agewell",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -18,7 +18,8 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "permissions": ["NOTIFICATIONS"]
       }
     },
     "web": {
@@ -31,6 +32,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "2ef46b82-61a0-4480-80f2-896524cab418"
+      }
+    },
+    "owner": "divyadevalla"
   }
 }
