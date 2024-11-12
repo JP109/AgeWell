@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   clockIcon: {
     position: "absolute",
     right: 15, // Slight adjustment to position the icon correctly
-    color: "#4caf50",
+    color: "#000",
   },
   toggleIndicator: {
     position: "absolute",

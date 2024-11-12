@@ -47,6 +47,8 @@ const styles = StyleSheet.create({
   taskText: {
     fontSize: 16,
     color: "#333",
+    marginLeft: 15,
+    marginBottom: 10,
   },
   completedText: {
     textDecorationLine: "line-through",
