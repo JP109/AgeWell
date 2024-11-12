@@ -5,12 +5,14 @@ import {
   Modal,
   TouchableOpacity,
   View,
+  Image,
+  Text,
 } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import { useState } from "react";
 import { Picker } from "@react-native-picker/picker";
 import CustomToggle from "@/components/CustomToggle";
+import oldHag from "../assets/images/oldHag.png";
 
 export default function PillsScreen() {
   const [selectedValue, setSelectedValue] = useState("1");
@@ -18,55 +20,66 @@ export default function PillsScreen() {
   const [duration, setDuration] = useState("1");
   const [isPickerVisible, setPickerVisible] = useState(false);
 
-  const handlePickerOpen = () => setPickerVisible(true);
+  const handlePickerOpen = () => {
+    if (Platform.OS === "ios") setPickerVisible(true);
+  };
   const handlePickerClose = () => setPickerVisible(false);
 
   return (
     <View style={styles.mainContainer}>
       <View style={styles.rightColumn}>
         <View style={styles.circle}>
-          {/* Replace with your image source */}
+          <Image source={oldHag} style={styles.circleImage} />
         </View>
       </View>
-      <ThemedView style={styles.titleContainer} lightColor="#f5fbf3">
-        <ThemedText type="title">Add Plan</ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.titleContainer} lightColor="#f5fbf3">
-        <ThemedText type="title">Pill Name</ThemedText>
-      </ThemedView>
+      <Text style={styles.titleText}>Add Plan</Text>
+      <Text style={styles.titleText}>Pill Name</Text>
 
       <View style={styles.pickerWrapper}>
-        <TouchableOpacity
-          style={styles.pickerContainer}
-          onPress={handlePickerOpen}
-        >
-          <ThemedText>{selectedValue}</ThemedText>
-        </TouchableOpacity>
-
-        {Platform.OS === "ios" && (
-          <Modal transparent visible={isPickerVisible} animationType="slide">
-            <View style={styles.modalOverlay}>
-              <View style={styles.modalContainer}>
-                <TouchableOpacity onPress={handlePickerClose}>
-                  <ThemedText style={styles.doneButton}>Done</ThemedText>
-                </TouchableOpacity>
-                <Picker
-                  selectedValue={selectedValue}
-                  onValueChange={(itemValue) => setSelectedValue(itemValue)}
-                  style={styles.picker}
-                  itemStyle={styles.pickerItem}
-                >
-                  <Picker.Item label="1" value="1" />
-                  <Picker.Item label="2" value="2" />
-                  <Picker.Item label="3" value="3" />
-                </Picker>
+        {Platform.OS === "ios" ? (
+          <>
+            <TouchableOpacity
+              style={styles.pickerContainer}
+              onPress={handlePickerOpen}
+            >
+              <ThemedText>{selectedValue}</ThemedText>
+            </TouchableOpacity>
+            <Modal transparent visible={isPickerVisible} animationType="slide">
+              <View style={styles.modalOverlay}>
+                <View style={styles.modalContainer}>
+                  <TouchableOpacity onPress={handlePickerClose}>
+                    <ThemedText style={styles.doneButton}>Done</ThemedText>
+                  </TouchableOpacity>
+                  <Picker
+                    selectedValue={selectedValue}
+                    onValueChange={(itemValue) => setSelectedValue(itemValue)}
+                    style={styles.picker}
+                    itemStyle={styles.pickerItem}
+                  >
+                    <Picker.Item label="1" value="1" />
+                    <Picker.Item label="2" value="2" />
+                    <Picker.Item label="3" value="3" />
+                  </Picker>
+                </View>
               </View>
-            </View>
-          </Modal>
+            </Modal>
+          </>
+        ) : (
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={selectedValue}
+              onValueChange={(itemValue) => setSelectedValue(itemValue)}
+              style={styles.picker}
+              itemStyle={styles.pickerItem}
+            >
+              <Picker.Item label="1" value="1" />
+              <Picker.Item label="2" value="2" />
+              <Picker.Item label="3" value="3" />
+            </Picker>
+          </View>
         )}
       </View>
 
-      {/* Rest of your code */}
       <CustomToggle />
     </View>
   );
@@ -81,12 +94,10 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     paddingHorizontal: 16,
   },
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 25,
-    backgroundColor: "#fff",
+  titleText: {
+    fontSize: 25,
+    color: "#333",
+    fontWeight: "bold",
   },
   rightColumn: {
     justifyContent: "flex-end",
@@ -95,12 +106,16 @@ const styles = StyleSheet.create({
     maxHeight: height * 0.2,
   },
   circle: {
-    width: 120,
+    width: 135,
     height: 120,
     borderRadius: 60,
-    overflow: "hidden",
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: "#ccc",
+  },
+  circleImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
   },
   pickerWrapper: {
     marginTop: 20,
