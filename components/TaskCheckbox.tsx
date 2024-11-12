@@ -1,18 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 // @ts-ignore
-import CheckBox from "react-native-checkbox";
+import CheckBox from "react-native-checkbox"; // Use this instead
 
-const TaskWithCheckbox = ({ taskText, isChecked: initialChecked }) => {
+interface TaskWithCheckboxProps {
+  taskText: string;
+  isChecked: boolean;
+  onToggle: (isChecked: boolean) => void;
+}
+
+const TaskWithCheckbox: React.FC<TaskWithCheckboxProps> = ({ taskText, isChecked: initialChecked, onToggle }) => {
   const [isChecked, setIsChecked] = useState<boolean>(initialChecked);
+
+  const handleToggle = (newValue: boolean) => {
+    console.log("Checkbox toggled:", newValue); // Debugging log
+    setIsChecked(newValue);
+    onToggle(newValue); // Call the parent handler to update the backend
+  };
 
   return (
     <View style={styles.taskContainer}>
       <CheckBox
-        value={isChecked}
-        onValueChange={(newValue: any) => setIsChecked(newValue)}
-        style={styles.checkbox}
-        label={null}
+        label='Label'
+        checked={isChecked}
+        onChange={(checked: any) => handleToggle(!checked)}
       />
       <Text style={[styles.taskText, isChecked && styles.completedText]}>
         {taskText}
@@ -36,8 +47,6 @@ const styles = StyleSheet.create({
   taskText: {
     fontSize: 16,
     color: "#333",
-    marginLeft: 15,
-    marginBottom: 10,
   },
   completedText: {
     textDecorationLine: "line-through",
