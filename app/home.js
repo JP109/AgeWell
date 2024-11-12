@@ -27,7 +27,7 @@ export default function HomeScreen() {
         name="Landing"
         component={LandingScreen}
         options={{
-          tabBarLabel: "Landing", // Label under the icon
+          tabBarLabel: "Home", // Label under the icon
           tabBarIcon: ({ color, size }) => (
             <Image
               source={require("../assets/images/home.png")} // Path to your custom icon

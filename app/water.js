@@ -25,7 +25,14 @@ import * as ProgressIndicator from "react-native-circular-progress-indicator";
 // @ts-ignore
 
 export default function WaterScreen() {
-  const [selectedValue, setSelectedValue] = useState("1");
+  const [selectedValue, setSelectedValue] = useState("4000");
+  const [hydration, setHydration] = useState("1000");
+  const [goal, setGoal] = useState("0");
+
+  useEffect(() => {
+    let goalNum = (Number(hydration) / Number(selectedValue)) * 100;
+    setGoal(goalNum.toString());
+  }, [selectedValue, hydration]);
 
   const [currentTime, setCurrentTime] = useState(() => {
     const date = new Date();
@@ -37,6 +44,89 @@ export default function WaterScreen() {
       })
       .toUpperCase();
   });
+  const date = new Date().toISOString();
+
+  // Prepare the data to be sent
+  const data = {
+    target: selectedValue, // The target value selected by the user
+    date: date, // The current date in ISO format
+  };
+  // Prepare the data to be sent
+  const intakeDataata = {
+    intake: hydration, // The target value selected by the user
+    date: date, // The current date in ISO format
+  };
+
+  const setTarget = async (target) => {
+    console.log("TR", target, Number(target));
+    setSelectedValue(target);
+    try {
+      // Make the POST request
+      const response = await fetch(
+        "https://agewell.onrender.com/api/water/add/target",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data), // Send both the target and date in the body
+        }
+      );
+
+      const result = await response.json(); // Parse the response
+
+      if (response.ok) {
+        // Handle success
+        console.log("Response:", result);
+        // You can handle successful response (e.g., show a success message)
+      } else {
+        // Handle failure (e.g., show error message)
+        console.error("Error:", result);
+        // Alert.alert("Error", result.message || "Failed to update target.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      // Alert.alert(
+      //   "Error",
+      //   "Unable to connect to the server. Please try again."
+      // );
+    }
+  };
+  const setWater = async (target) => {
+    console.log("tr", target);
+    setHydration(target);
+    try {
+      // Make the POST request
+      const response = await fetch(
+        "https://agewell.onrender.com/api/water/add/intake",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(intakeDataata), // Send both the target and date in the body
+        }
+      );
+
+      const result = await response.json(); // Parse the response
+
+      if (response.ok) {
+        // Handle success
+        console.log("Response:", result);
+        // You can handle successful response (e.g., show a success message)
+      } else {
+        // Handle failure (e.g., show error message)
+        console.error("Error:", result);
+        // Alert.alert("Error", result.message || "Failed to update target.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      // Alert.alert(
+      //   "Error",
+      //   "Unable to connect to the server. Please try again."
+      // );
+    }
+  };
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -54,6 +144,7 @@ export default function WaterScreen() {
 
     return () => clearInterval(intervalId);
   }, []);
+
   return (
     <View
       style={styles.mainContainer} // Apply the gradient to the main container
@@ -76,10 +167,30 @@ export default function WaterScreen() {
         <View style={styles.leftColumn}>
           <View style={styles.row}>
             <Text style={styles.titleText}>{currentTime}</Text>
-            <Text style={styles.subtitleText}>Subtitle 1</Text>
-            <TouchableOpacity style={styles.pillButton}>
+            <Text style={styles.subtitleText}>12th November</Text>
+
+            {/* <TouchableOpacity style={styles.pillButton}>
               <Text style={styles.pillButtonText}>Record Hyrdation</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+            <View style={styles.pillButton}>
+              <Text style={styles.targetLabel}>Record hydration</Text>
+              <Picker
+                selectedValue={hydration}
+                style={styles.picker}
+                onValueChange={(itemValue) => setWater(itemValue)}
+              >
+                <Picker.Item label="0" value="0" />
+                <Picker.Item label="1 litre" value="1000" />
+                <Picker.Item label="1.5 litre" value="1500" />
+                <Picker.Item label="2 litre" value="2000" />
+                <Picker.Item label="2.5 litre" value="2500" />
+                <Picker.Item label="3 litre" value="3000" />
+                <Picker.Item label="3.5 litre" value="3500" />
+                <Picker.Item label="4 litre" value="4000" />
+                <Picker.Item label="4.5 litre" value="4500" />
+                <Picker.Item label="5 litre" value="5000" />
+              </Picker>
+            </View>
           </View>
         </View>
 
@@ -113,17 +224,23 @@ export default function WaterScreen() {
           <Picker
             selectedValue={selectedValue}
             style={styles.picker}
-            onValueChange={(itemValue) => setSelectedValue(itemValue)}
+            onValueChange={(itemValue) => setTarget(itemValue)}
           >
-            <Picker.Item label="1" value="1" />
-            <Picker.Item label="2" value="2" />
-            <Picker.Item label="3" value="3" />
+            <Picker.Item label="1 litre" value="1000" />
+            <Picker.Item label="1.5 litre" value="1500" />
+            <Picker.Item label="2 litre" value="2000" />
+            <Picker.Item label="2.5 litre" value="2500" />
+            <Picker.Item label="3 litre" value="3000" />
+            <Picker.Item label="3.5 litre" value="3500" />
+            <Picker.Item label="4 litre" value="4000" />
+            <Picker.Item label="4.5 litre" value="4500" />
+            <Picker.Item label="5 litre" value="5000" />
           </Picker>
         </View>
         <Text style={styles.progressText}>Goal Preview</Text>
         <View style={styles.progressContainer}>
           <CircularProgressWithChild
-            value={selectedValue === "1" ? 30 : selectedValue === "2" ? 60 : 90} // Use 'value' prop instead of 'percent'
+            value={goal} // Use 'value' prop instead of 'percent'
             radius={50}
             duration={1000} // Optional: Animation duration
             strokeWidth={8}
@@ -135,13 +252,7 @@ export default function WaterScreen() {
             inActiveStrokeWidth={8}
             bgcolor="#fff"
           >
-            <Text style={styles.percentText}>
-              {selectedValue === "1"
-                ? "30%"
-                : selectedValue === "2"
-                ? "60%"
-                : "90%"}
-            </Text>
+            <Text style={styles.percentText}>{`${goal}%`}</Text>
           </CircularProgressWithChild>
         </View>
       </View>
@@ -270,7 +381,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#51bff2", // Blue background for the picker container
     borderRadius: 18, // Rounded corners for the container
     padding: 10, // Padding to create space inside the container
-    width: width * 0.35, // 30% of the screen width
+    width: width * 0.45, // 30% of the screen width
     height: 80,
   },
   picker: {
@@ -438,5 +549,27 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 10,
     bottom: -40,
+  },
+  pillButton: {
+    marginTop: 5, // Adds space between the subtitle and the button
+    backgroundColor: "#fff", // Button background color
+    paddingVertical: 10, // Adds vertical padding to make it more pill-like
+    paddingHorizontal: 0, // Horizontal padding for shape control
+    borderRadius: 25, // Makes the button pill-shaped
+    alignItems: "center", // Centers the text inside the button
+    justifyContent: "center",
+    width: 120, // Explicitly set width to control the button's size
+  },
+  picker: {
+    width: "100%",
+    height: 50,
+    color: "#000", // White text color for the items in the picker
+  },
+  targetLabel: {
+    fontSize: 13,
+    fontWeight: "bold",
+    color: "#000",
+    // fontWeight: "bold",
+    // marginBottom: 10,
   },
 });

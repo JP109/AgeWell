@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, TextInput } from "react-native";
+import { Dimensions, StyleSheet, TextInput, Image, Text } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import CustomToggle from "@/components/CustomToggle";
@@ -7,6 +7,7 @@ import { TouchableOpacity, View } from "react-native";
 // @ts-ignore
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useEffect, useState, useMemo } from "react";
+import wave1 from "../assets/images/wave7.png";
 
 export default function LandingScreen() {
   const [tasks, setTasks] = useState([]);
@@ -88,10 +89,22 @@ export default function LandingScreen() {
 
   return (
     <View style={styles.mainContainer}>
-      <ThemedView style={styles.titleContainer} lightColor="#f5fbf3">
-        <ThemedText type="title">Daily Log</ThemedText>
+      <View style={styles.waveContainer1}>
+        <Image source={wave1} style={styles.waveImage} />
+      </View>
+      <View style={styles.waveContainer2}>
+        <Image source={wave1} style={styles.waveImage} />
+      </View>
+      <View style={styles.waveContainer3}>
+        <Image source={wave1} style={styles.waveImage} />
+      </View>
+      <View style={styles.titleContainer} lightColor="#f5fbf3">
+        <Text type="title" style={styles.titleText}>
+          {" "}
+          Daily Log
+        </Text>
         <Icon name="clock-o" size={20} color="#000" />
-      </ThemedView>
+      </View>
 
       {/* Toggle between "Task" and "Done" */}
       <View>
@@ -126,14 +139,95 @@ export default function LandingScreen() {
           <Icon name="plus" size={24} color="white" />
         </TouchableOpacity>
       </View>
+      {/* <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.inputField}
+          placeholder="Enter your task..."
+          placeholderTextColor="#6e7880" // Grey text for placeholder
+          value={taskDetails.name}
+          onChangeText={(text) =>
+            setTaskDetails({ ...taskDetails, name: text })
+          }
+        />
+
+        <View style={styles.addButtonContainer}>
+          <TouchableOpacity style={styles.addButton} onPress={handleAddTask}>
+            <Icon name="plus" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
+      </View> */}
     </View>
   );
 }
 
 // Get the screen width dynamically
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
+  waveContainer1: {
+    position: "absolute",
+    top: 0,
+    right: -100,
+    zIndex: -1, // Place behind the main content
+    justifyContent: "center",
+    alignItems: "center",
+
+    width: width * 0.93,
+    height: height * 0.3,
+  },
+  waveContainer2: {
+    position: "absolute",
+    top: 200,
+    left: -100,
+    zIndex: -1, // Place behind the main content
+    justifyContent: "center",
+    alignItems: "center",
+
+    width: width * 0.93,
+    height: height * 0.3,
+  },
+  waveContainer3: {
+    position: "absolute",
+    right: -150,
+    bottom: 10,
+    zIndex: -1, // Place behind the main content
+    justifyContent: "center",
+    alignItems: "center",
+
+    width: width,
+    height: height * 0.4,
+  },
+  waveImage: {
+    width: "100%", // Cover the full width of the container
+    height: "100%", // Cover the full height of the container
+    resizeMode: "contain", // Ensure the image covers the container without distortion
+    borderRadius: 10, // Optional: Add rounded corners if needed
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  inputField: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    padding: 10,
+    fontSize: 16,
+    flex: 1,
+  },
+  submitButton: {
+    backgroundColor: "#62cdfa",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 50,
+    marginLeft: 10,
+  },
+  submitButtonText: {
+    color: "#fff",
+    fontSize: 24, // Increased size for the "+" symbol
+    fontWeight: "bold",
+  },
   mainContainer: {
     flex: 1,
     backgroundColor: "#f5fbf3",
@@ -162,6 +256,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 6,
     elevation: 5,
+
+    overflow: "scroll",
   },
   inputBox: {
     backgroundColor: "#fff",
@@ -199,5 +295,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 6,
     elevation: 8,
+  },
+  titleText: {
+    fontSize: 25,
+    color: "#333",
+    fontWeight: "bold",
   },
 });

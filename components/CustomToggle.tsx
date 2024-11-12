@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   },
   doneText: {
     right: 0,
-    color: "#4caf50", // Green for the "Done" text
+    color: "#000", // Green for the "Done" text
   },
   toggleIndicator: {
     position: "absolute",

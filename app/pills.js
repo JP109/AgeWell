@@ -1,7 +1,7 @@
 import CustomToggleSmall from "@/components/CustomToggleSmall";
 import { ThemedText } from "@/components/ThemedText";
 import { Picker } from "@react-native-picker/picker";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dimensions,
   Image,
@@ -10,6 +10,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  TextInput,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import oldWoman from "../assets/images/oldWoman.png";
@@ -22,6 +23,67 @@ export default function PillsScreen() {
   const [isPickerVisible, setPickerVisible] = useState(false);
   const [toggleState, setToggleState] = useState("schedule"); // "schedule" or "clock"
   const [time, setTime] = useState(new Date());
+  const [inputValue, setInputValue] = useState(""); // For storing the input field value
+
+  const handleOnlyPillSubmit = async () => {
+    // Check if the input value is not empty
+    if (inputValue.trim() === "") {
+      alert("Please enter a medicine name.");
+      return;
+    }
+
+    // Prepare the data to send in the POST request
+    const payload = {
+      name: inputValue, // The name entered by the user
+      dosage: "500mg", // Hardcoded dosage
+      schedule: duration, // Hardcoded schedule (weekly in this case)
+      amount: parseInt(amount, 10), // Hardcoded amount (defaulted to 1)
+      time: time, // Hardcoded time
+    };
+
+    try {
+      const response = await fetch(
+        "https://agewell.onrender.com/api/pills/add",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Medicine added successfully:", result);
+        alert("Medicine added successfully!");
+      } else {
+        console.error("Error adding medicine:", response.status);
+        alert("Failed to add medicine.");
+      }
+    } catch (error) {
+      console.error("Error during submission:", error);
+      alert("An error occurred while adding the medicine.");
+    }
+  };
+
+  // State to hold the medicine data
+  const [medicines, setMedicines] = useState([]);
+
+  // Fetch the medicine data from the API
+  useEffect(() => {
+    const fetchMedicines = async () => {
+      try {
+        const response = await fetch("https://agewell.onrender.com/api/pills/");
+        const data = await response.json();
+        setMedicines(data); // Assuming the response is an array of medicines
+      } catch (error) {
+        console.error("Error fetching medicines:", error);
+      }
+    };
+
+    fetchMedicines();
+  }, [inputValue]); // Empty dependency array means this effect runs only once on mount
 
   // Handle the selected time
   const onTimeChange = (event, selectedTime) => {
@@ -66,13 +128,29 @@ export default function PillsScreen() {
           <Image source={oldWoman} style={styles.circleImage} />
         </View>
       </View>
-      <Text type="title" style={styles.titleText}>
+      {/* <Text type="title" style={styles.titleText}>
         Add Plan
-      </Text>
+      </Text> */}
       <Text type="title" style={styles.titleText}>
         Pill Name
       </Text>
       <View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.inputField}
+            placeholder="Enter Medicine Name"
+            value={inputValue}
+            onChangeText={(text) => setInputValue(text)} // Set input value
+          />
+
+          {/* Submit Button */}
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={handleOnlyPillSubmit}
+          >
+            <Text style={styles.submitButtonText}>+</Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.pickerContainer}>
           <Image
             source={require("../assets/images/handPills.png")}
@@ -85,9 +163,13 @@ export default function PillsScreen() {
             style={styles.picker}
             onValueChange={(itemValue) => setSelectedValue(itemValue)}
           >
-            <Picker.Item label="1" value="1" />
-            <Picker.Item label="2" value="2" />
-            <Picker.Item label="3" value="3" />
+            {medicines.map((medicine) => (
+              <Picker.Item
+                // key={medicine.id} // Assuming each medicine has a unique 'id'
+                label={medicine.name} // Assuming each medicine has a 'name' property
+                value={medicine.name} // You can use the medicine's 'id' as the value
+              />
+            ))}
           </Picker>
         </View>
       </View>
@@ -110,6 +192,8 @@ export default function PillsScreen() {
               <Picker.Item label="10mg" value="1" />
               <Picker.Item label="20mg" value="2" />
               <Picker.Item label="30mg" value="3" />
+              <Picker.Item label="40mg" value="4" />
+              <Picker.Item label="50mg" value="5" />
             </Picker>
           </View>
         </View>
@@ -143,47 +227,48 @@ export default function PillsScreen() {
         Notifications
       </Text>
 
-      {toggleState != "clock" ? (
-        <View style={styles.foodContainer}>
-          <View style={styles.buttonRow}>
-            {/* Button 1 */}
-            <TouchableOpacity
-              style={[styles.button, activeButton === 1 && styles.activeButton]}
-              onPress={() => handleButtonPress(1)}
-            >
-              <Icon
-                name="home"
-                size={20}
-                color={activeButton === 1 ? "#fff" : "#000"}
-              />
-            </TouchableOpacity>
+      {/* {toggleState != "clock" ? ( */}
+      <View style={styles.foodContainer}>
+        <View style={styles.buttonRow}>
+          {/* Button 1 */}
+          <TouchableOpacity
+            style={[styles.button, activeButton === 1 && styles.activeButton]}
+            onPress={() => handleButtonPress(1)}
+          >
+            <Icon
+              name="home"
+              size={20}
+              color={activeButton === 1 ? "#fff" : "#000"}
+            />
+          </TouchableOpacity>
 
-            {/* Button 2 */}
-            <TouchableOpacity
-              style={[styles.button, activeButton === 2 && styles.activeButton]}
-              onPress={() => handleButtonPress(2)}
-            >
-              <Icon
-                name="search"
-                size={20}
-                color={activeButton === 2 ? "#fff" : "#000"}
-              />
-            </TouchableOpacity>
+          {/* Button 2 */}
+          <TouchableOpacity
+            style={[styles.button, activeButton === 2 && styles.activeButton]}
+            onPress={() => handleButtonPress(2)}
+          >
+            <Icon
+              name="search"
+              size={20}
+              color={activeButton === 2 ? "#fff" : "#000"}
+            />
+          </TouchableOpacity>
 
-            {/* Button 3 */}
-            <TouchableOpacity
-              style={[styles.button, activeButton === 3 && styles.activeButton]}
-              onPress={() => handleButtonPress(3)}
-            >
-              <Icon
-                name="bell"
-                size={20}
-                color={activeButton === 3 ? "#fff" : "#000"}
-              />
-            </TouchableOpacity>
-          </View>
+          {/* Button 3 */}
+          <TouchableOpacity
+            style={[styles.button, activeButton === 3 && styles.activeButton]}
+            onPress={() => handleButtonPress(3)}
+          >
+            <Icon
+              name="bell"
+              size={20}
+              color={activeButton === 3 ? "#fff" : "#000"}
+            />
+          </TouchableOpacity>
         </View>
-      ) : (
+      </View>
+
+      {toggleState == "clock" && (
         <View>
           <DateTimePicker
             value={time}
@@ -232,6 +317,31 @@ export default function PillsScreen() {
 const { height, width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  inputField: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    padding: 10,
+    fontSize: 16,
+    flex: 1,
+  },
+  submitButton: {
+    backgroundColor: "#62cdfa",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 50,
+    marginLeft: 10,
+  },
+  submitButtonText: {
+    color: "#fff",
+    fontSize: 24, // Increased size for the "+" symbol
+    fontWeight: "bold",
+  },
   mainContainer: {
     flex: 1,
     backgroundColor: "#fff",
