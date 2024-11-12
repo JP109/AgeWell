@@ -12,26 +12,68 @@ import {
 
 export default function SignupScreen({ navigation }) {
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false); // To track loading state
 
-  const handleSignup = () => {
-    if (!email || !password) {
-      Alert.alert("Error", "Please fill in both fields.");
+  const handleSignup = async () => {
+    if (!email || !password || !name) {
+      Alert.alert("Error", "Please fill in all fields.");
       return;
     }
 
-    // Example: Signup logic here (API, Firebase, etc.)
-    console.log("Signing up with:", email, password);
+    setLoading(true); // Set loading to true while making the request
 
-    // Simulate successful signup
-    Alert.alert("Success", "Signup Successful!");
-    navigation.navigate("Home"); // Redirect to Home screen
+    try {
+      // Making a POST request to the signup API
+      const response = await fetch(
+        "https://agewell.onrender.com/api/auth/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            password: password,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Success
+        Alert.alert("Success", "Signup Successful!");
+        router.push("/home");
+      } else {
+        // Error
+        Alert.alert(
+          "Error",
+          data.message || "Something went wrong. Please try again."
+        );
+      }
+    } catch (error) {
+      // Network or other errors
+      Alert.alert("Error", "Something went wrong. Please check your network.");
+    } finally {
+      setLoading(false); // Stop loading once the request is completed
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Create an Account</Text>
-
+      <TextInput
+        style={styles.input}
+        placeholder="Name"
+        value={name}
+        onChangeText={setName}
+        keyboardType="name"
+        autoCapitalize="none"
+        placeholderTextColor="#888"
+      />
       <TextInput
         style={styles.input}
         placeholder="Email"
