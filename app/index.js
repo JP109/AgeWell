@@ -11,8 +11,18 @@ import {
   Image,
 } from "react-native";
 import { useRouter } from "expo-router";
-import loginBg from "../assets/images/welcome-logo.png";
-import title from "../assets/images/title.png";
+import loginBg from "../assets/images/login-bg.jpg";
+import title from "../assets/images/title.jpg";
+import * as Notifications from 'expo-notifications';
+
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
 
 export default function LandingPage() {
   const router = useRouter();
