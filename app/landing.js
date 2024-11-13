@@ -296,7 +296,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 6,
     elevation: 5,
-
     overflow: "scroll",
   },
   inputBox: {
