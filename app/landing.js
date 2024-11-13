@@ -1,17 +1,23 @@
-import { Dimensions, StyleSheet, TextInput, Image, Text } from "react-native";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
+// LandingScreen.js
+
 import CustomToggle from "@/components/CustomToggle";
 import TaskWithCheckbox from "@/components/TaskCheckbox";
-import { TouchableOpacity, View } from "react-native";
-// @ts-ignore
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  ScrollView,
+} from "react-native";
+import { useEffect, useMemo, useState } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { useEffect, useState, useMemo } from "react";
 import wave1 from "../assets/images/wave7.png";
 
 export default function LandingScreen() {
   const [tasks, setTasks] = useState([]);
-  const [filteredTasks, setFilteredTasks] = useState([]);
   const [taskDetails, setTaskDetails] = useState({
     name: "",
     time: "",
@@ -19,15 +25,14 @@ export default function LandingScreen() {
     notifications: false,
   });
   const [showCompleted, setShowCompleted] = useState(false); // Track toggle state
+
   // Fetch tasks from the API
   useEffect(() => {
-    console.log(showCompleted);
     const fetchTasks = async () => {
       try {
         const response = await fetch("https://agewell.onrender.com/api/tasks/");
         const data = await response.json();
         setTasks(data);
-        setFilteredTasks(data.filter((task) => !task.taskFinished));
       } catch (error) {
         console.error("Error fetching tasks:", error);
       }
@@ -35,22 +40,16 @@ export default function LandingScreen() {
     fetchTasks();
   }, []);
 
-  useEffect(() => {
-    console.log("hello?");
-    let arr = tasks.filter((task) =>
-      showCompleted ? task.taskFinished : !task.taskFinished
-    );
-    setFilteredTasks(arr);
-  }, [showCompleted]);
-  // Memoize filtered tasks based on toggle state
-  const filteredTask = useMemo(() => {
+  // Filtered tasks based on `showCompleted` toggle
+  const filteredTasks = useMemo(() => {
     return tasks.filter((task) =>
       showCompleted ? task.taskFinished : !task.taskFinished
     );
   }, [tasks, showCompleted]);
 
-  const updateTaskStatus = async (taskName, isChecked) => {
-    console.log(taskName, isChecked);
+  // Update task status when checkbox is checked/unchecked
+  const updateTaskStatus = async (taskId, taskName, isChecked) => {
+    console.log(taskId, isChecked);
     try {
       const response = await fetch(
         "https://agewell.onrender.com/api/tasks/update",
@@ -61,6 +60,7 @@ export default function LandingScreen() {
           },
           body: JSON.stringify({
             name: taskName,
+            time: "03:18",
             taskFinished: isChecked,
           }),
         }
@@ -69,6 +69,13 @@ export default function LandingScreen() {
       const data = await response.json();
       if (response.ok) {
         console.log("Task updated successfully:", data);
+
+        // Update local state immediately
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task._id === taskId ? { ...task, taskFinished: isChecked } : task
+          )
+        );
       } else {
         console.error("Failed to update task:", data.message);
       }
@@ -76,21 +83,20 @@ export default function LandingScreen() {
       console.error("Error updating task:", error);
     }
   };
-  // Function to send a POST request
+
+  // Function to add a new task
   const sendTaskRequest = async (taskText) => {
     if (!taskText.trim()) return; // Don't send request if input is empty
 
-    // Define default values for the other fields
     const defaultTaskDetails = {
-      time: "03:18", // Default time
-      taskFinished: false, // Default value for taskFinished
-      notifications: true, // Default value for notifications
+      time: "03:18",
+      taskFinished: false,
+      notifications: true,
     };
 
-    // Prepare the task data to send
     const taskData = {
       name: taskText,
-      ...defaultTaskDetails, // Spread default task details
+      ...defaultTaskDetails,
     };
 
     try {
@@ -101,31 +107,30 @@ export default function LandingScreen() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(taskData), // Send task data with defaults
+          body: JSON.stringify(taskData),
         }
       );
-      if (!response.ok) {
-        console.error("Error:", response.statusText);
-      }
       const data = await response.json();
-      console.log("Response data:", data);
-
-      // Optionally update tasks state here after adding the task
-      setTasks((prevTasks) => [...prevTasks, data]); // Assuming API returns the newly added task
+      if (response.ok) {
+        setTasks((prevTasks) => [...prevTasks, data]); // Add new task locally
+      } else {
+        console.error("Error adding task:", data.message);
+      }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error adding task:", error);
     }
   };
 
   // Handle add task button click
   const handleAddTask = () => {
-    sendTaskRequest(taskDetails.name); // Send request with task name
-    setTaskDetails({ ...taskDetails, name: "" }); // Clear input field after submitting
+    sendTaskRequest(taskDetails.name);
+    setTaskDetails({ ...taskDetails, name: "" });
   };
+
   const updateToggle = () => {
-    console.log(":(");
     setShowCompleted((prev) => !prev);
   };
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.waveContainer1}>
@@ -140,37 +145,41 @@ export default function LandingScreen() {
       <View style={styles.titleContainer} lightColor="#f5fbf3">
         <Text type="title" style={styles.titleText}>
           {" "}
-          Daily Log
+          Daily Log{" "}
         </Text>
         <Icon name="clock-o" size={20} color="#000" />
       </View>
 
-      {/* Toggle between "Task" and "Done" */}
+      {/* Toggle between "Tasks" and "Done" */}
       <View>
         <CustomToggle
           toggleText1="Tasks"
           toggleText2="Done"
           isToggled={showCompleted}
-          onToggle={() => updateToggle(showCompleted)}
+          onToggle={updateToggle}
         />
       </View>
 
       {/* Display filtered tasks */}
       <View style={styles.tasksContainer}>
-        {filteredTasks.map((task) => (
-          <TaskWithCheckbox
-            key={task._id}
-            taskText={task.name}
-            isChecked={task.taskFinished}
-            onToggle={(isChecked) => updateTaskStatus(task.name, isChecked)}
-          />
-        ))}
+        <ScrollView>
+          {filteredTasks.map((task) => (
+            <TaskWithCheckbox
+              key={task._id}
+              taskText={task.name}
+              isChecked={task.taskFinished}
+              onToggle={(isChecked) =>
+                updateTaskStatus(task._id, task.name, isChecked)
+              }
+            />
+          ))}
+        </ScrollView>
       </View>
 
       <TextInput
         style={styles.inputBox}
         placeholder="Enter your task..."
-        placeholderTextColor="#6e7880" // Grey text for placeholder
+        placeholderTextColor="#6e7880"
         value={taskDetails.name}
         onChangeText={(text) => setTaskDetails({ ...taskDetails, name: text })}
       />
@@ -179,23 +188,6 @@ export default function LandingScreen() {
           <Icon name="plus" size={24} color="white" />
         </TouchableOpacity>
       </View>
-      {/* <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.inputField}
-          placeholder="Enter your task..."
-          placeholderTextColor="#6e7880" // Grey text for placeholder
-          value={taskDetails.name}
-          onChangeText={(text) =>
-            setTaskDetails({ ...taskDetails, name: text })
-          }
-        />
-
-        <View style={styles.addButtonContainer}>
-          <TouchableOpacity style={styles.addButton} onPress={handleAddTask}>
-            <Icon name="plus" size={24} color="white" />
-          </TouchableOpacity>
-        </View>
-      </View> */}
     </View>
   );
 }

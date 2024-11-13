@@ -10,28 +10,23 @@ import {
 
 const { width } = Dimensions.get("window");
 
-const CustomToggle = () => {
-  const [isTaskDone, setIsTaskDone] = useState(false);
-  const [position] = useState(new Animated.Value(0)); // Position for sliding effect
+const CustomToggle = ({ isToggled, onToggle }) => {
+  const position = useState(
+    new Animated.Value(isToggled ? width * 0.45 : 0)
+  )[0];
 
-  // Toggle function that changes the task state and triggers the animation
-  const toggleSwitch = () => {
-    const newState = !isTaskDone; // Toggle the state
-
-    // Update the state first
-    setIsTaskDone(newState);
-
-    // Trigger the slide animation based on the new state
+  // Update the slide animation based on the new state
+  React.useEffect(() => {
     Animated.timing(position, {
-      toValue: newState ? width * 0.45 : 0, // If task is done, slide to 0.45 width, else go back to 0
-      duration: 300, // Duration of the animation
-      useNativeDriver: true, // Use native driver for better performance
+      toValue: isToggled ? width * 0.45 : 0,
+      duration: 300,
+      useNativeDriver: true,
     }).start();
-  };
+  }, [isToggled]);
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.toggleContainer} onPress={toggleSwitch}>
+      <TouchableOpacity style={styles.toggleContainer} onPress={onToggle}>
         {/* "Task" Text */}
         <Text style={[styles.toggleText, styles.taskText]}>Task</Text>
 
@@ -40,7 +35,7 @@ const CustomToggle = () => {
           style={[
             styles.toggleIndicator,
             {
-              transform: [{ translateX: position }], // Apply the slide animation
+              transform: [{ translateX: position }],
             },
           ]}
         />
