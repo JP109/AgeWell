@@ -21,7 +21,7 @@ const CustomToggleSmall = ({ onChange }) => {
     onChange(newState ? "clock" : "schedule"); // Notify parent to update the state
 
     Animated.timing(position, {
-      toValue: newState ? 0 : 10, // Slide to the right when toggled on, left when toggled off
+      toValue: newState ? 0 : 5, // Slide to the right when toggled on, left when toggled off
       duration: 300, // Animation duration
       useNativeDriver: true, // Enable native driver for better performance
     }).start();
@@ -64,15 +64,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: 144,
+    zIndex: -1,
   },
   toggleContainer: {
     width: "100%", // Adjust width as needed
     height: width * 0.12, // Adjust height as needed
-    backgroundColor: "#e0e0e0", // Light gray background
+    backgroundColor: "#f8f8f6", // Light gray background
     borderRadius: width * 0.06, // Rounded corners (50% of height for circular look)
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 8, // Space for the text inside
+    paddingHorizontal: 5, // Space for the text inside
     position: "relative",
   },
   toggleText: {
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#55A377", // Green indicator color
     borderRadius: width * 0.06, // Rounded corners for the indicator
     zIndex: -1, // Ensure the indicator is behind the text
-    left: 87,
+    left: 92,
   },
   toggleIndicatorSchedule: {
     position: "absolute",
