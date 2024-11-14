@@ -16,6 +16,7 @@ export default function ProfileScreen() {
       try {
         const response = await fetch("https://agewell.onrender.com/api/users/");
         const data = await response.json();
+        console.log("^^^^^^^^^^^^^^^^^^", data);
         setUserData(data);
       } catch (error) {
         console.error("Error fetching userData:", error);
@@ -33,15 +34,15 @@ export default function ProfileScreen() {
         <View style={styles.leftColumn}>
           <View style={styles.row}>
             <Text style={styles.titleText}>Name</Text>
-            <Text style={styles.subtitleText}>{userData?.name}</Text>
+            <Text style={styles.titlebText}>{userData?.profile.name}</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.titleText}>Joined</Text>
-            <Text style={styles.subtitleText}>{userData?.name}</Text>
+            <Text style={styles.titlebText}>Nov 2024</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.titleText}>Emergency Contact</Text>
-            <Text style={styles.subtitleText}>{userData?.name}</Text>
+            <Text style={styles.titlebText}>Abhishek</Text>
           </View>
         </View>
 
@@ -55,22 +56,22 @@ export default function ProfileScreen() {
 
       <View style={styles.vitalsGrid}>
         <View style={styles.vitalsContainer}>
-          <Text style={styles.subtitleText}>Name</Text>
-          <Text style={styles.titleText}>Name</Text>
+          <Text style={styles.subtitleText}>{userData?.pillCount}</Text>
+          <Text style={styles.titleText}>No. of schedules</Text>
         </View>
         <View style={styles.vitalsContainer}>
-          <Text style={styles.subtitleText}>Name</Text>
-          <Text style={styles.titleText}>Name</Text>
+          <Text style={styles.subtitleText}>{userData?.taskCount}</Text>
+          <Text style={styles.titleText}>No. of tasks</Text>
         </View>
       </View>
       <View style={styles.vitalsGrid}>
         <View style={styles.vitalsContainer}>
-          <Text style={styles.subtitleText}>Name</Text>
-          <Text style={styles.titleText}>Name</Text>
+          <Text style={styles.subtitleText}>{userData?.waterIntake}</Text>
+          <Text style={styles.titleText}>Water Intake</Text>
         </View>
         <View style={styles.vitalsContainer}>
-          <Text style={styles.subtitleText}>Name</Text>
-          <Text style={styles.titleText}>Name</Text>
+          <Text style={styles.subtitleText}>{userData?.waterTarget}</Text>
+          <Text style={styles.titleText}>Water Target</Text>
         </View>
       </View>
     </LinearGradient>
@@ -96,6 +97,7 @@ const styles = StyleSheet.create({
     paddingVertical: "10%", // To center the container horizontally, using 5% on both sides
     backgroundColor: "#fff",
     marginTop: 50,
+    marginBottom: 30,
 
     display: "flex",
     flexDirection: "row",
@@ -128,12 +130,17 @@ const styles = StyleSheet.create({
     resizeMode: "cover", // Ensures the image covers the whole circle
   },
   subtitleText: {
-    fontSize: 18,
+    fontSize: 35,
     fontWeight: "bold",
     color: "#6e7880",
   },
   titleText: {
     fontSize: 14,
+    color: "#6e7880",
+  },
+  titlebText: {
+    fontSize: 16,
+    fontWeight: "bold",
     color: "#6e7880",
   },
   vitalsGrid: {

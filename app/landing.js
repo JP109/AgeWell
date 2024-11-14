@@ -133,9 +133,9 @@ export default function LandingScreen() {
 
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.waveContainer1}>
+      {/* <View style={styles.waveContainer1}>
         <Image source={wave1} style={styles.waveImage} />
-      </View>
+      </View> */}
       <View style={styles.waveContainer2}>
         <Image source={wave1} style={styles.waveImage} />
       </View>
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   },
   waveContainer2: {
     position: "absolute",
-    top: 200,
+    top: 100,
     left: -100,
     zIndex: -1, // Place behind the main content
     justifyContent: "center",
