@@ -45,7 +45,8 @@
     "react-native-svg": "^15.8.0",
     "react-native-svg-transformer": "^1.5.0",
     "react-native-timer-picker": "^1.10.3",
-    "react-native-web": "~0.19.10"
+    "react-native-web": "~0.19.10",
+    "expo-blur": "~13.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

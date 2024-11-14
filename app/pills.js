@@ -86,7 +86,10 @@ export default function PillsScreen() {
       time: alarmString, // Hardcoded time
     };
 
+    console.log("GGGGGGGGGGGGGGG", payload);
+
     try {
+      console.log("GGGGGGGGGGGGGGG", payload);
       const response = await fetch(
         "https://agewell.onrender.com/api/pills/add",
         {
@@ -227,18 +230,23 @@ export default function PillsScreen() {
   return (
     <TouchableWithoutFeedback onPress={handleCloseDropdown}>
       <View style={styles.mainContainer}>
-        <View style={styles.doneContainer}>
-          <View style={styles.doneButtonTop}>
-            <TouchableOpacity onPress={handlePillSubmit}>
-              <Text style={styles.doneButtonText}>Done</Text>
-            </TouchableOpacity>
+        {!isDropdownVisible && (
+          <View>
+            <View style={styles.doneContainer}>
+              <View style={styles.doneButtonTop}>
+                <TouchableOpacity onPress={handlePillSubmit}>
+                  <Text style={styles.doneButtonText}>Done</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.rightColumn}>
+              <View style={styles.circle}>
+                <Image source={oldWoman} style={styles.circleImage} />
+              </View>
+            </View>
           </View>
-        </View>
-        <View style={styles.rightColumn}>
-          <View style={styles.circle}>
-            <Image source={oldWoman} style={styles.circleImage} />
-          </View>
-        </View>
+        )}
+
         <Text type="title" style={styles.subtitle}>
           Pill Name
         </Text>
@@ -317,7 +325,7 @@ export default function PillsScreen() {
                 onValueChange={(itemValue) => setDuration(itemValue)}
               >
                 <Picker.Item label="Week" value="weekly" />
-                <Picker.Item label="Today" value="today" />
+                <Picker.Item label="Today" value="daily" />
               </Picker>
             </View>
           </View>
@@ -332,7 +340,7 @@ export default function PillsScreen() {
           Notifications
         </Text>
 
-        {toggleState != "clock" ? (
+        {toggleState == "clock" ? (
           <View style={styles.foodContainer}>
             <View style={[styles.buttonRow]}>
               {/* Button 1 */}
@@ -439,7 +447,7 @@ export default function PillsScreen() {
                 setAlarmString(formatTime(pickedDuration));
                 setShowPicker(false);
               }}
-              modalTitle="Set Alarm"
+              modalTitle=""
               onCancel={() => setShowPicker(false)}
               closeOnOverlayPress
               styles={{ theme: "dark" }}
@@ -669,7 +677,7 @@ const styles = StyleSheet.create({
     flex: 1,
     maxHeight: height * 0.15,
 
-    // marginTop: 30,
+    marginTop: 120,
     marginRight: 20,
     zIndex: -1,
   },

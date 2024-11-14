@@ -13,7 +13,7 @@ const { width } = Dimensions.get("window");
 
 const CustomToggleSmall = ({ onChange }) => {
   const [isTaskDone, setIsTaskDone] = useState(false);
-  const [position] = useState(new Animated.Value(8)); // Initial position for the sliding indicator
+  const [position] = useState(new Animated.Value(5)); // Initial position for the sliding indicator
 
   const toggleSwitch = () => {
     const newState = !isTaskDone;
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: 144,
-    zIndex: -1,
+    zIndex: -91,
   },
   toggleContainer: {
     width: "100%", // Adjust width as needed

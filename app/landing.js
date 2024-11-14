@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
+  Keyboard,
 } from "react-native";
 import { useEffect, useMemo, useState } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -125,56 +126,62 @@ export default function LandingScreen() {
   const handleAddTask = () => {
     sendTaskRequest(taskDetails.name);
     setTaskDetails({ ...taskDetails, name: "" });
+    setDropdownVisible(false);
+    Keyboard.dismiss();
   };
 
   const updateToggle = () => {
     setShowCompleted((prev) => !prev);
   };
-
+  const [isDropdownVisible, setDropdownVisible] = useState(false);
   return (
     <View style={styles.mainContainer}>
       {/* <View style={styles.waveContainer1}>
         <Image source={wave1} style={styles.waveImage} />
       </View> */}
-      <View style={styles.waveContainer2}>
-        <Image source={wave1} style={styles.waveImage} />
-      </View>
-      <View style={styles.waveContainer3}>
-        <Image source={wave1} style={styles.waveImage} />
-      </View>
-      <View style={styles.titleContainer} lightColor="#f5fbf3">
-        <Text type="title" style={styles.titleText}>
-          {" "}
-          Daily Log{" "}
-        </Text>
-        <Icon name="clock-o" size={20} color="#000" />
-      </View>
+      {!isDropdownVisible && (
+        <View>
+          <View style={styles.waveContainer2}>
+            <Image source={wave1} style={styles.waveImage} />
+          </View>
+          <View style={styles.waveContainer3}>
+            <Image source={wave1} style={styles.waveImage} />
+          </View>
+          <View style={styles.titleContainer} lightColor="#f5fbf3">
+            <Text type="title" style={styles.titleText}>
+              {" "}
+              Daily Log{" "}
+            </Text>
+            <Icon name="clock-o" size={20} color="#000" />
+          </View>
 
-      {/* Toggle between "Tasks" and "Done" */}
-      <View>
-        <CustomToggle
-          toggleText1="Tasks"
-          toggleText2="Done"
-          isToggled={showCompleted}
-          onToggle={updateToggle}
-        />
-      </View>
-
-      {/* Display filtered tasks */}
-      <View style={styles.tasksContainer}>
-        <ScrollView>
-          {filteredTasks.map((task) => (
-            <TaskWithCheckbox
-              key={task._id}
-              taskText={task.name}
-              isChecked={task.taskFinished}
-              onToggle={(isChecked) =>
-                updateTaskStatus(task._id, task.name, isChecked)
-              }
+          {/* Toggle between "Tasks" and "Done" */}
+          <View>
+            <CustomToggle
+              toggleText1="Tasks"
+              toggleText2="Done"
+              isToggled={showCompleted}
+              onToggle={updateToggle}
             />
-          ))}
-        </ScrollView>
-      </View>
+          </View>
+
+          {/* Display filtered tasks */}
+          <View style={styles.tasksContainer}>
+            <ScrollView>
+              {filteredTasks.map((task) => (
+                <TaskWithCheckbox
+                  key={task._id}
+                  taskText={task.name}
+                  isChecked={task.taskFinished}
+                  onToggle={(isChecked) =>
+                    updateTaskStatus(task._id, task.name, isChecked)
+                  }
+                />
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+      )}
 
       <TextInput
         style={styles.inputBox}
@@ -182,6 +189,7 @@ export default function LandingScreen() {
         placeholderTextColor="#6e7880"
         value={taskDetails.name}
         onChangeText={(text) => setTaskDetails({ ...taskDetails, name: text })}
+        onFocus={() => setDropdownVisible(true)}
       />
       <View style={styles.addButtonContainer}>
         <TouchableOpacity style={styles.addButton} onPress={handleAddTask}>
@@ -221,7 +229,7 @@ const styles = StyleSheet.create({
   waveContainer3: {
     position: "absolute",
     right: -150,
-    bottom: 10,
+    bottom: -200,
     zIndex: -1, // Place behind the main content
     justifyContent: "center",
     alignItems: "center",

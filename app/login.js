@@ -23,26 +23,30 @@ export default function LoginPage() {
 
   // Function to get the push token
   const registerForPushNotifications = async () => {
-    console.log("hi",Device.isDevice)
+    console.log("hi", Device.isDevice);
     if (Device.isDevice) {
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
 
       if (existingStatus !== "granted") {
         const { status } = await Notifications.requestPermissionsAsync();
         finalStatus = status;
       }
-      console.log(existingStatus,35);
+      console.log(existingStatus, 35);
       if (finalStatus !== "granted") {
         Alert.alert("Failed to get push token for push notification!");
         return;
       }
       try {
         const token = await Notifications.getExpoPushTokenAsync({
-          projectId: '2ef46b82-61a0-4480-80f2-896524cab418',
-          applicationId: 'agewell', // Replace with your actual application ID
+          projectId: "2ef46b82-61a0-4480-80f2-896524cab418",
+          applicationId: "agewell", // Replace with your actual application ID
         });
-        console.log("Push token:", token);
+        console.log(
+          "Push token!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!:",
+          token
+        );
         setPushToken(token?.data);
         console.log(token, 44);
       } catch (error) {
@@ -71,7 +75,7 @@ export default function LoginPage() {
             }),
           }
         );
-        console.log(pushToken,68);
+        console.log(pushToken, 68);
 
         const data = await response.json();
 

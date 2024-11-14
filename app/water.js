@@ -28,11 +28,23 @@ export default function WaterScreen() {
   const [selectedValue, setSelectedValue] = useState("4000");
   const [hydration, setHydration] = useState("1000");
   const [goal, setGoal] = useState("0");
+  const [userData, setUserData] = useState(Number(hydration));
 
   useEffect(() => {
-    let goalNum = (Number(hydration) / Number(selectedValue)) * 100;
+    let goalNum = (Number(userData) / Number(selectedValue)) * 100;
     setGoal(goalNum.toString());
-  }, [selectedValue, hydration]);
+    // const fetchData = async () => {
+    //   try {
+    //     const response = await fetch("https://agewell.onrender.com/api/water/");
+    //     const data = await response.json();
+    //     console.log("^^^^^^^^^^^^^^^^^^", data, data.intake);
+    //     setUserData(data);
+    //   } catch (error) {
+    //     console.error("Error fetching userData:", error);
+    //   }
+    // };
+    // fetchData();
+  }, [selectedValue, hydration, userData]);
 
   const [currentTime, setCurrentTime] = useState(() => {
     const date = new Date();
@@ -48,12 +60,12 @@ export default function WaterScreen() {
 
   // Prepare the data to be sent
   const data = {
-    target: selectedValue, // The target value selected by the user
+    target: Number(selectedValue), // The target value selected by the user
     date: date, // The current date in ISO format
   };
   // Prepare the data to be sent
   const intakeDataata = {
-    intake: hydration, // The target value selected by the user
+    intake: Number(hydration), // The target value selected by the user
     date: date, // The current date in ISO format
   };
 
@@ -95,6 +107,7 @@ export default function WaterScreen() {
   const setWater = async (target) => {
     console.log("tr", target);
     setHydration(target);
+    setUserData(userData + Number(target));
     try {
       // Make the POST request
       const response = await fetch(
@@ -207,6 +220,7 @@ export default function WaterScreen() {
 
       <View style={styles.waterConsumed}>
         <View style={styles.largerCircle}>
+          <Text style={styles.mainLabel}>{userData}ml</Text>
           <View style={styles.waveContainer4}>
             <Image source={wave2} style={styles.waveImage4} />
           </View>
@@ -376,6 +390,14 @@ const styles = StyleSheet.create({
     color: "#fff",
     // fontWeight: "bold",
     // marginBottom: 10,
+  },
+  mainLabel: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#000",
+    position: "absolute",
+    left: 50,
+    top: 100,
   },
   pickerContainer: {
     backgroundColor: "#51bff2", // Blue background for the picker container
