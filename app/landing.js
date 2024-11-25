@@ -133,6 +133,11 @@ export default function LandingScreen() {
   const updateToggle = () => {
     setShowCompleted((prev) => !prev);
   };
+
+  const handleDeleteTask = (taskId) => {
+    setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
+  };
+
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   return (
     <View style={styles.mainContainer}>
@@ -171,11 +176,13 @@ export default function LandingScreen() {
               {filteredTasks.map((task) => (
                 <TaskWithCheckbox
                   key={task._id}
+                  id={task._id}
                   taskText={task.name}
                   isChecked={task.taskFinished}
                   onToggle={(isChecked) =>
                     updateTaskStatus(task._id, task.name, isChecked)
                   }
+                  onDelete={handleDeleteTask}
                 />
               ))}
             </ScrollView>

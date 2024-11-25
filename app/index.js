@@ -1,6 +1,7 @@
 // app/index.js
 
 import React from "react";
+// import { AvatarProvider } from "./AvatarContext";
 import {
   View,
   Button,
@@ -13,8 +14,7 @@ import {
 import { useRouter } from "expo-router";
 import loginBg from "../assets/images/welcome-logo.png";
 import title from "../assets/images/title.png";
-import * as Notifications from 'expo-notifications';
-
+import * as Notifications from "expo-notifications";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -28,7 +28,6 @@ export default function LandingPage() {
 
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.title}>AgeWell</Text> */}
       <Image source={title} style={styles.titleImage} />
       <Image source={loginBg} style={styles.backgroundImage} />
       <TouchableOpacity

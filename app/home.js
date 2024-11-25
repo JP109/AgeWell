@@ -1,12 +1,14 @@
 // app/home.js (or wherever this component is located)
 
 import React from "react";
+import { AvatarProvider } from "./AvatarContext";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import ProfileScreen from "./profile";
 import WaterScreen from "./water";
 import PillsScreen from "./pills";
 import LandingScreen from "./landing";
 import { Text, Image } from "react-native";
+import AvatarScreen from "./avatar";
 // import { NavigationContainer } from "@react-navigation/native";
 // No need to import NavigationContainer here
 

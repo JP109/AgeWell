@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   Image,
+  Alert,
 } from "react-native";
 import { useState, useEffect } from "react";
 import { Picker } from "@react-native-picker/picker"; // Correct import
@@ -17,7 +18,6 @@ import {
   CircularProgressWithChild,
 } from "react-native-circular-progress-indicator";
 import * as ProgressIndicator from "react-native-circular-progress-indicator";
-// console.log("AAHN", ProgressIndicator); // Check what is being exported
 
 // import ProgressCircle from "react-native-progress-circle"; // Correct import
 
@@ -33,17 +33,6 @@ export default function WaterScreen() {
   useEffect(() => {
     let goalNum = (Number(userData) / Number(selectedValue)) * 100;
     setGoal(goalNum.toString());
-    // const fetchData = async () => {
-    //   try {
-    //     const response = await fetch("https://agewell.onrender.com/api/water/");
-    //     const data = await response.json();
-    //     console.log("^^^^^^^^^^^^^^^^^^", data, data.intake);
-    //     setUserData(data);
-    //   } catch (error) {
-    //     console.error("Error fetching userData:", error);
-    //   }
-    // };
-    // fetchData();
   }, [selectedValue, hydration, userData]);
 
   const [currentTime, setCurrentTime] = useState(() => {
@@ -107,7 +96,16 @@ export default function WaterScreen() {
   const setWater = async (target) => {
     console.log("tr", target);
     setHydration(target);
-    setUserData(userData + Number(target));
+    const newLevel = userData + Number(target);
+    if (newLevel < selectedValue) {
+      setUserData(newLevel);
+    } else {
+      setUserData(selectedValue);
+      Alert.alert(
+        "Water target reached!",
+        "Congratulations, you've reached your hydration goal!"
+      );
+    }
     try {
       // Make the POST request
       const response = await fetch(
@@ -124,20 +122,12 @@ export default function WaterScreen() {
       const result = await response.json(); // Parse the response
 
       if (response.ok) {
-        // Handle success
         console.log("Response:", result);
-        // You can handle successful response (e.g., show a success message)
       } else {
-        // Handle failure (e.g., show error message)
         console.error("Error:", result);
-        // Alert.alert("Error", result.message || "Failed to update target.");
       }
     } catch (error) {
       console.error("Error:", error);
-      // Alert.alert(
-      //   "Error",
-      //   "Unable to connect to the server. Please try again."
-      // );
     }
   };
 

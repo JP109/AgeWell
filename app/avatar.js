@@ -5,15 +5,22 @@ import { Text, Image, TouchableOpacity } from "react-native";
 import { View } from "react-native";
 // import LinearGradient from "react-native-linear-gradient";
 import oldWoman from "../assets/images/oldWoman.png";
-import edit from "../assets/images/edit-line.png";
-import settings from "../assets/images/settings.png";
+import darkGuy from "../assets/images/darkguy.png";
+import darkWoman from "../assets/images/darkwoman.png";
+import oldMan from "../assets/images/oldman.png";
+import punjabi from "../assets/images/punjabi.png";
+import whiteGuy from "../assets/images/whiteguy.png";
+import whiteWoman from "../assets/images/whitewoman.png";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
+import { useAvatar } from "./AvatarContext"; // Import useAvatar hook
 // @ts-ignore
 
-export default function ProfileScreen() {
+export default function AvatarScreen() {
   const router = useRouter();
+  const [currentAvatar, setCurrentAvatar] = useState(oldWoman);
+  //   const { currentAvatar, handleImageChange } = useAvatar();
   const [userData, setUserData] = useState();
   useEffect(() => {
     const fetchData = async () => {
@@ -27,72 +34,69 @@ export default function ProfileScreen() {
     };
     fetchData();
   }, []);
+  //   // Handle button clicks to change the avatar image
+  const handleImageChange = (image) => {
+    setCurrentAvatar(image); // Update the avatar based on the clicked image
+  };
   return (
-    <LinearGradient
-      colors={["#cdf7c0", "#b6e7f5"]} // Start color and end color for the gradient
+    <View
       style={styles.mainContainer} // Apply the gradient to the main container
     >
       <View style={styles.profileContainer}>
-        {/* Left column */}
-        <View style={styles.leftColumn}>
-          <View style={styles.row}>
-            <Text style={styles.titleText}>Name</Text>
-            <Text style={styles.titlebText}>{userData?.profile.name}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.titleText}>Joined</Text>
-            <Text style={styles.titlebText}>Nov 2024</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.titleText}>Emergency Contact</Text>
-            <Text style={styles.titlebText}>Abhishek</Text>
-          </View>
-        </View>
-
-        {/* Right column with circle image */}
+        <TouchableOpacity onPress={() => router.push("/home")}>
+          <Text style={styles.doneButton}>Done</Text>
+        </TouchableOpacity>
         <View style={styles.rightColumn}>
-          <TouchableOpacity onPress={() => router.push("/settings")}>
-            <View style={styles.settingsButton}>
-              <Image source={settings} style={styles.editButtonImg} />
-            </View>
-          </TouchableOpacity>
           <View style={styles.circle}>
-            <Image source={oldWoman} style={styles.circleImage} />
+            <Image source={currentAvatar} style={styles.circleImage} />
           </View>
-          <TouchableOpacity onPress={() => router.push("/avatar")}>
-            <View style={styles.editButton}>
-              <Image source={edit} style={styles.editButtonImg} />
-            </View>
-          </TouchableOpacity>
+          <Text style={styles.boldText}>Current Avatar</Text>
         </View>
       </View>
 
       <View style={styles.vitalsGrid}>
         <TouchableOpacity
           style={styles.vitalsContainer}
-          onPress={() => router.push("/schedules")}
+          onPress={() => handleImageChange(darkGuy)}
         >
-          {/* <View> */}
-          <Text style={styles.subtitleText}>{userData?.pillCount}</Text>
-          <Text style={styles.titleText}>No. of schedules</Text>
-          {/* </View> */}
+          <Image source={darkGuy} style={styles.circleImage} />
         </TouchableOpacity>
-        <View style={styles.vitalsContainer}>
-          <Text style={styles.subtitleText}>{userData?.taskCount}</Text>
-          <Text style={styles.titleText}>No. of tasks</Text>
-        </View>
+        <TouchableOpacity
+          style={styles.vitalsContainer}
+          onPress={() => handleImageChange(darkWoman)}
+        >
+          <Image source={darkWoman} style={styles.circleImage} />
+        </TouchableOpacity>
       </View>
       <View style={styles.vitalsGrid}>
-        <View style={styles.vitalsContainer}>
-          <Text style={styles.subtitleText}>{userData?.waterIntake}</Text>
-          <Text style={styles.titleText}>Water Intake</Text>
-        </View>
-        <View style={styles.vitalsContainer}>
-          <Text style={styles.subtitleText}>{userData?.waterTarget}</Text>
-          <Text style={styles.titleText}>Water Target</Text>
-        </View>
+        <TouchableOpacity
+          style={styles.vitalsContainer}
+          onPress={() => handleImageChange(punjabi)}
+        >
+          <Image source={punjabi} style={styles.circleImage} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.vitalsContainer}
+          onPress={() => handleImageChange(oldMan)}
+        >
+          <Image source={oldMan} style={styles.circleImage} />
+        </TouchableOpacity>
       </View>
-    </LinearGradient>
+      <View style={styles.vitalsGrid}>
+        <TouchableOpacity
+          style={styles.vitalsContainer}
+          onPress={() => handleImageChange(whiteGuy)}
+        >
+          <Image source={whiteGuy} style={styles.circleImage} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.vitalsContainer}
+          onPress={() => handleImageChange(whiteWoman)}
+        >
+          <Image source={whiteWoman} style={styles.circleImage} />
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 }
 
@@ -103,26 +107,37 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: "#f5fbf3",
-    paddingTop: 10, // Adds space at the top of the screen (adjust as needed)
-    paddingHorizontal: 16, // Adds some padding on the left and right
+    // paddingTop: 10, // Adds space at the top of the screen (adjust as needed)
+    // paddingHorizontal: 16, // Adds some padding on the left and right
   },
   profileContainer: {
-    width: "90%", // 90% of the screen width
+    width: "100%", // 90% of the screen width
     height: width * 0.6, // Fixed height of 20 (you can adjust this if needed)
-    borderRadius: 20, // Border radius for rounded corners (adjust as needed)
-    marginHorizontal: "5%", // To center the container horizontally, using 5% on both sides
     paddingHorizontal: "5%", // To center the container horizontally, using 5% on both sides
     paddingVertical: "10%", // To center the container horizontally, using 5% on both sides
     backgroundColor: "#fff",
-    marginTop: 50,
     marginBottom: 30,
+    borderBottomLeftRadius: 250,
+    borderBottomRightRadius: 250,
 
     display: "flex",
     flexDirection: "row",
+
+    backgroundColor: "#4d5151",
   },
-  leftColumn: {
-    flex: 1, // Takes up the remaining space
-    justifyContent: "flex-start", // Distribute space between rows
+  doneButton: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 18,
+
+    position: "absolute",
+    left: 270,
+  },
+  boldText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+    paddingTop: 5,
   },
   row: {
     flexDirection: "column", // Makes each row have two subrows
@@ -141,31 +156,12 @@ const styles = StyleSheet.create({
     overflow: "hidden", // Ensures the image stays within the circle
     borderWidth: 2, // Optional: Add a border to the circle
     borderColor: "#ccc", // Optional: Circle border color
+    backgroundColor: "pink",
   },
   circleImage: {
     width: "100%",
     height: "100%",
     resizeMode: "cover", // Ensures the image covers the whole circle
-  },
-  editButton: {
-    position: "absolute",
-    top: -20,
-    right: -70,
-    height: 30,
-    width: 30,
-    // overflow: "hidden",
-  },
-  settingsButton: {
-    position: "absolute",
-    top: -30,
-    right: -70,
-    height: 20,
-    width: 20,
-  },
-  editButtonImg: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "cover",
   },
   subtitleText: {
     fontSize: 35,
@@ -191,8 +187,8 @@ const styles = StyleSheet.create({
     width: "40%",
     height: width * 0.4,
     borderRadius: 20,
-    // marginHorizontal: "5%",
-    backgroundColor: "#fff",
+    padding: "2%",
+    backgroundColor: "#b5d8c2",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
