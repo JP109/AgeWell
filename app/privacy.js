@@ -19,12 +19,12 @@ export default function PrivacyScreen() {
   return (
     <View style={styles.mainContainer}>
       <View>
-        <View style={styles.waveContainer2}>
+        {/* <View style={styles.waveContainer2}>
           <Image source={wave1} style={styles.waveImage} />
         </View>
         <View style={styles.waveContainer3}>
           <Image source={wave1} style={styles.waveImage} />
-        </View>
+        </View> */}
         <View style={styles.titleContainer} lightColor="#f5fbf3">
           <Text type="title" style={styles.titleText}>
             {" "}

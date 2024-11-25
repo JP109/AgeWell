@@ -84,6 +84,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 10,
     justifyContent: "space-between",
+    borderBottomWidth: 1,
+    borderColor: "#c2c2c2",
   },
   checkbox: {
     marginRight: 10,

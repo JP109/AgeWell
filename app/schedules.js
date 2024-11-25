@@ -36,12 +36,12 @@ export default function SettingsScreen() {
   return (
     <View style={styles.mainContainer}>
       <View>
-        <View style={styles.waveContainer2}>
+        {/* <View style={styles.waveContainer2}>
           <Image source={wave1} style={styles.waveImage} />
         </View>
         <View style={styles.waveContainer3}>
           <Image source={wave1} style={styles.waveImage} />
-        </View>
+        </View> */}
         <View style={styles.titleContainer} lightColor="#f5fbf3">
           <Text type="title" style={styles.titleText}>
             {" "}
@@ -63,7 +63,7 @@ export default function SettingsScreen() {
                     {pill.name}
                   </Text>
                 </View>
-                <Text style={styles.pillText}>No.{pill.amount}</Text>
+                <Text style={styles.pillText}>{pill.schedule}</Text>
               </View>
             ))}
           </ScrollView>
@@ -143,11 +143,11 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     width: "100%",
-    paddingLeft: 20,
+    paddingLeft: 5,
     paddingBottom: 5,
     marginBottom: 13,
     borderBottomWidth: 1,
-    borderColor: "gray",
+    borderColor: "#c2c2c2",
     justifyContent: "space-between",
   },
   iconRow: {
