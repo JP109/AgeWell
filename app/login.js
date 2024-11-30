@@ -8,7 +8,7 @@ import {
   Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
-import * as Notifications from "expo-notifications";
+// import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 
 export default function LoginPage() {
@@ -17,45 +17,45 @@ export default function LoginPage() {
   const router = useRouter();
   const [pushToken, setPushToken] = useState(null);
 
-  useEffect(() => {
-    registerForPushNotifications();
-  }, []);
+  // useEffect(() => {
+  //   registerForPushNotifications();
+  // }, []);
 
-  // Function to get the push token
-  const registerForPushNotifications = async () => {
-    console.log("hi", Device.isDevice);
-    if (Device.isDevice) {
-      const { status: existingStatus } =
-        await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
+  // // Function to get the push token
+  // const registerForPushNotifications = async () => {
+  //   console.log("hi", Device.isDevice);
+  //   if (Device.isDevice) {
+  //     const { status: existingStatus } =
+  //       await Notifications.getPermissionsAsync();
+  //     let finalStatus = existingStatus;
 
-      if (existingStatus !== "granted") {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-      console.log(existingStatus, 35);
-      if (finalStatus !== "granted") {
-        Alert.alert("Failed to get push token for push notification!");
-        return;
-      }
-      try {
-        const token = await Notifications.getExpoPushTokenAsync({
-          projectId: "2ef46b82-61a0-4480-80f2-896524cab418",
-          applicationId: "agewell", // Replace with your actual application ID
-        });
-        console.log(
-          "Push token!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!:",
-          token
-        );
-        setPushToken(token?.data);
-        console.log(token, 44);
-      } catch (error) {
-        console.error("Error fetching Expo push token:", error);
-      }
-    } else {
-      Alert.alert("Must use physical device for Push Notifications");
-    }
-  };
+  //     if (existingStatus !== "granted") {
+  //       const { status } = await Notifications.requestPermissionsAsync();
+  //       finalStatus = status;
+  //     }
+  //     console.log(existingStatus, 35);
+  //     if (finalStatus !== "granted") {
+  //       Alert.alert("Failed to get push token for push notification!");
+  //       return;
+  //     }
+  //     try {
+  //       const token = await Notifications.getExpoPushTokenAsync({
+  //         projectId: "2ef46b82-61a0-4480-80f2-896524cab418",
+  //         applicationId: "agewell", // Replace with your actual application ID
+  //       });
+  //       console.log(
+  //         "Push token!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!:",
+  //         token
+  //       );
+  //       setPushToken(token?.data);
+  //       console.log(token, 44);
+  //     } catch (error) {
+  //       console.error("Error fetching Expo push token:", error);
+  //     }
+  //   } else {
+  //     Alert.alert("Must use physical device for Push Notifications");
+  //   }
+  // };
 
   const handleLogin = async () => {
     if (username && password) {

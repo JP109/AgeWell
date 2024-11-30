@@ -14,15 +14,7 @@ import {
 import { useRouter } from "expo-router";
 import loginBg from "../assets/images/welcome-logo.png";
 import title from "../assets/images/title.png";
-import * as Notifications from "expo-notifications";
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
 export default function LandingPage() {
   const router = useRouter();
 

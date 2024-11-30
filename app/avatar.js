@@ -43,7 +43,7 @@ export default function AvatarScreen() {
       style={styles.mainContainer} // Apply the gradient to the main container
     >
       <View style={styles.profileContainer}>
-        <TouchableOpacity onPress={() => router.push("/home")}>
+        <TouchableOpacity onPress={() => router.push("/profile")}>
           <Text style={styles.doneButton}>Done</Text>
         </TouchableOpacity>
         <View style={styles.rightColumn}>

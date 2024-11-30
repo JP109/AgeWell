@@ -19,6 +19,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import oldWoman from "../assets/images/oldWoman.png";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { TimerPickerModal } from "react-native-timer-picker";
+import * as Notifications from "expo-notifications";
 
 export default function PillsScreen() {
   const [selectedValue, setSelectedValue] = useState("1");
@@ -26,8 +27,6 @@ export default function PillsScreen() {
   const [duration, setDuration] = useState("weekly");
   const [isPickerVisible, setPickerVisible] = useState(false);
   const [toggleState, setToggleState] = useState("schedule"); // "schedule" or "clock"
-  // const [time, setTime] = useState(new Date());
-  // const [inputValue, setInputValue] = useState(""); // For storing the input field value
 
   const handleOnlyPillSubmit = async () => {
     // Check if the input value is not empty
@@ -70,6 +69,26 @@ export default function PillsScreen() {
       alert("An error occurred while adding the medicine.");
     }
   };
+  async function setPillReminder(payload) {
+    const [hours, minutes] = payload.time.split(":").map(Number);
+
+    const now = new Date();
+    now.setHours(hours);
+    now.setMinutes(minutes);
+    now.setSeconds(0);
+    console.log("now", now);
+    const trigger = new Date(now); // Assuming 'time' is a valid Date string or object
+
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Medication reminder",
+        body: `${payload.name}`,
+      },
+      trigger,
+    });
+
+    console.log("Local notification scheduled for:", trigger);
+  }
   const handlePillSubmit = async () => {
     // Check if the input value is not empty
     if (searchText.trim() === "") {
@@ -86,10 +105,11 @@ export default function PillsScreen() {
       time: alarmString, // Hardcoded time
     };
 
-    console.log("GGGGGGGGGGGGGGG", payload);
+    // console.log("payload", payload);
+    setPillReminder(payload);
 
     try {
-      console.log("GGGGGGGGGGGGGGG", payload);
+      // console.log("payload", payload);
       const response = await fetch(
         "https://agewell.onrender.com/api/pills/add",
         {
@@ -124,10 +144,9 @@ export default function PillsScreen() {
       try {
         const response = await fetch("https://agewell.onrender.com/api/pills/");
         const data = await response.json();
-        console.log("medicine", data);
+        // console.log("medicine", data);
         const names = data.map((item) => item.name);
         setMedicines(names); // Assuming the response is an array of medicines
-        console.log("medicine NEW!!!!!!!!!!!", names);
       } catch (error) {
         console.error("Error fetching medicines:", error);
       }
@@ -135,19 +154,6 @@ export default function PillsScreen() {
 
     fetchMedicines();
   }, [searchText]); // Empty dependency array means this effect runs only once on mount
-
-  // Handle the selected time
-  const onTimeChange = (event, selectedTime) => {
-    setShowPicker(false);
-    if (selectedTime) {
-      setTime(selectedTime);
-    }
-  };
-
-  const handlePickerOpen = () => {
-    if (Platform.OS === "ios") setPickerVisible(true);
-  };
-  const handlePickerClose = () => setPickerVisible(false);
 
   const [activeButton, setActiveButton] = useState(1); // To track the active button
 
@@ -173,32 +179,11 @@ export default function PillsScreen() {
   };
 
   const [isDropdownVisible, setDropdownVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState("");
   const [searchText, setSearchText] = useState("");
-
-  const dropdownValues = [
-    "Apple",
-    "Banana",
-    "Cherry",
-    "Grapes",
-    "Orange",
-    "Pineapple",
-    "Strawberry",
-    "Watermelon",
-  ];
 
   const [time, setTime] = useState("00:00");
 
-  const handleTimeChange = (time) => {
-    setTime(time);
-  };
-
-  const filteredValues = dropdownValues.filter((item) =>
-    item.toLowerCase().includes(searchText.toLowerCase())
-  );
-
   const handleSelectItem = (item) => {
-    setSelectedItem(item);
     setSearchText(item); // Set the selected item as search text
     setDropdownVisible(false); // Close the dropdown after selection
   };
@@ -212,15 +197,6 @@ export default function PillsScreen() {
   const [alarmString, setAlarmString] = useState("10:00");
   const [showPicker, setShowPicker] = useState(false);
 
-  // Format the time into a readable string
-  // const formatTime = (duration) => {
-  //   console.log("@@@@@@@@@@@@@@@@@@@@@@", duration);
-  //   const hours = Math.floor(duration / 60);
-  //   const minutes = duration % 60;
-  //   let returnVal = `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
-  //   console.log("PPPPPPPPPPPPPPP", returnVal);
-  //   return returnVal;
-  // };
   function formatTime(timeObj) {
     const hours = String(timeObj.hours).padStart(2, "0");
     const minutes = String(timeObj.minutes).padStart(2, "0");
@@ -457,15 +433,6 @@ export default function PillsScreen() {
             />
           </View>
         )}
-        {/* {isPickerVisible && (
-          // <DateTimePicker
-          //   value={time}
-          //   mode="time"
-          //   display="spinner" // Options: "spinner", "clock", "compact" (iOS-only)
-          //   onChange={onTimeChange}
-          // />
-          <TimerPicker onChange={onTimeChange} />
-        )} */}
 
         {/* Conditional rendering of weekContainer */}
         {duration === "weekly" && (

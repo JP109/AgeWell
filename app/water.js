@@ -6,8 +6,9 @@ import {
   View,
   Image,
   Alert,
+  Animated,
 } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Picker } from "@react-native-picker/picker"; // Correct import
 import water from "../assets/images/water.png";
 import wave1 from "../assets/images/mesh.png";
@@ -28,6 +29,7 @@ export default function WaterScreen() {
   const [selectedValue, setSelectedValue] = useState("4000");
   const [hydration, setHydration] = useState("1000");
   const [goal, setGoal] = useState("0");
+  // const [newLevel, setNewLevel] = useState("0");
   const [userData, setUserData] = useState(Number(hydration));
 
   useEffect(() => {
@@ -95,8 +97,10 @@ export default function WaterScreen() {
   };
   const setWater = async (target) => {
     console.log("tr", target);
+    // moveImage();
     setHydration(target);
     const newLevel = userData + Number(target);
+    // setNewLevel(userData + Number(target));
     if (newLevel < selectedValue) {
       setUserData(newLevel);
     } else {
@@ -148,6 +152,32 @@ export default function WaterScreen() {
     return () => clearInterval(intervalId);
   }, []);
 
+  // const position = useRef(new Animated.Value(0)).current; // Animated value for the x-position
+
+  // const moveImage = () => {
+  //   Animated.timing(position, {
+  //     toValue: 100, // Change this value to move to a specific position
+  //     duration: 500, // Animation duration in milliseconds
+  //     useNativeDriver: false, // Use native driver (set to false for style animations like `left`)
+  //   }).start();
+  // };
+
+  const handlePillSubmit = () => {
+    console.log("HAndle submit");
+    setUserData(0);
+  };
+
+  const animatedBottom = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    // Animate whenever `userData` changes
+    Animated.timing(animatedBottom, {
+      toValue: userData / 40, // Calculate the new bottom position
+      duration: 500, // Animation duration in milliseconds
+      useNativeDriver: false, // Must be false for layout properties like `bottom`
+    }).start();
+  }, [userData]);
+
   return (
     <View
       style={styles.mainContainer} // Apply the gradient to the main container
@@ -161,8 +191,12 @@ export default function WaterScreen() {
       <View style={styles.waveContainer3}>
         <Image source={wave1} style={styles.waveImage} />
       </View>
+      <TouchableOpacity onPress={handlePillSubmit}>
+        <Text>RESET</Text>
+      </TouchableOpacity>
       <View style={styles.profileContainer}>
         {/* <View style={styles.waveContainer4}> */}
+
         <Image source={wave2} style={styles.waveImage2} />
         <Image source={wave3} style={styles.waveImage3} />
         {/* </View> */}
@@ -212,10 +246,16 @@ export default function WaterScreen() {
         <View style={styles.largerCircle}>
           <Text style={styles.mainLabel}>{userData}ml</Text>
           <View style={styles.waveContainer4}>
-            <Image source={wave2} style={styles.waveImage4} />
+            <Animated.Image
+              source={wave2}
+              style={[styles.waveImage4, { bottom: animatedBottom }]}
+            />
           </View>
           <View style={styles.waveContainer5}>
-            <Image source={wave3} style={styles.waveImage5} />
+            <Animated.Image
+              source={wave3}
+              style={[styles.waveImage5, { bottom: animatedBottom }]}
+            />
           </View>
           {/* Replace with your image source */}
           {/* <Image source={{ uri: "https://example.com/your-image.jpg" }} style={styles.circleImage} /> */}
@@ -387,7 +427,7 @@ const styles = StyleSheet.create({
     color: "#000",
     position: "absolute",
     left: 50,
-    top: 100,
+    top: 70,
   },
   pickerContainer: {
     backgroundColor: "#51bff2", // Blue background for the picker container
@@ -477,7 +517,7 @@ const styles = StyleSheet.create({
     width: 180, // Increased size of the circle (previously was 100)
     height: 180, // Increased size of the circle (previously was 100)
     borderRadius: 90, // Make it a perfect circle (half of the width/height)
-    overflow: "hidden", // Ensures the image stays within the circle
+    // overflow: "hidden", // Ensures the image stays within the circle
     borderWidth: 7, // Optional: Add a border to the circle
     borderColor: "#ade5fc", // Blue border color
     backgroundColor: "#f3f9fb",
@@ -519,7 +559,6 @@ const styles = StyleSheet.create({
     // borderColor: "blue", // Optional: Circle border color
 
     position: "absolute",
-    // bottom: -300,
     left: -30,
   },
   waveImage5: {
