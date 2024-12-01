@@ -7,6 +7,10 @@ import {
   Image,
   Alert,
   Animated,
+  Easing,
+  Modal,
+  Button,
+  ImageBackground,
 } from "react-native";
 import { useState, useEffect, useRef } from "react";
 import { Picker } from "@react-native-picker/picker"; // Correct import
@@ -34,6 +38,7 @@ export default function WaterScreen() {
 
   useEffect(() => {
     let goalNum = (Number(userData) / Number(selectedValue)) * 100;
+    goalNum = goalNum.toFixed(0);
     setGoal(goalNum.toString());
   }, [selectedValue, hydration, userData]);
 
@@ -95,6 +100,7 @@ export default function WaterScreen() {
       // );
     }
   };
+  const [showModal, setShowModal] = useState(false);
   const setWater = async (target) => {
     console.log("tr", target);
     // moveImage();
@@ -105,10 +111,11 @@ export default function WaterScreen() {
       setUserData(newLevel);
     } else {
       setUserData(selectedValue);
-      Alert.alert(
-        "Water target reached!",
-        "Congratulations, you've reached your hydration goal!"
-      );
+      setShowModal(true);
+      // Alert.alert(
+      //   "Water target reached!",
+      //   "Congratulations, you've reached your hydration goal!"
+      // );
     }
     try {
       // Make the POST request
@@ -152,16 +159,6 @@ export default function WaterScreen() {
     return () => clearInterval(intervalId);
   }, []);
 
-  // const position = useRef(new Animated.Value(0)).current; // Animated value for the x-position
-
-  // const moveImage = () => {
-  //   Animated.timing(position, {
-  //     toValue: 100, // Change this value to move to a specific position
-  //     duration: 500, // Animation duration in milliseconds
-  //     useNativeDriver: false, // Use native driver (set to false for style animations like `left`)
-  //   }).start();
-  // };
-
   const handlePillSubmit = () => {
     console.log("HAndle submit");
     setUserData(0);
@@ -171,12 +168,92 @@ export default function WaterScreen() {
 
   useEffect(() => {
     // Animate whenever `userData` changes
+    let increment = 22;
+    switch (selectedValue) {
+      case "5000":
+        increment = 29;
+        break;
+      case "4500":
+        increment = 27;
+        break;
+      case "4000":
+        increment = 22;
+        break;
+      case "3500":
+        increment = 18;
+        break;
+      case "3000":
+        increment = 16;
+        break;
+      case "2500":
+        increment = 13;
+        break;
+      case "2000":
+        increment = 11;
+        break;
+      case "1500":
+        increment = 9;
+        break;
+      case "1000":
+        increment = 6;
+        break;
+      case "500":
+        increment = 13;
+        break;
+      default:
+        increment = 22; // Default value if not matched
+    }
     Animated.timing(animatedBottom, {
-      toValue: userData / 40, // Calculate the new bottom position
+      toValue: -(userData / increment),
       duration: 500, // Animation duration in milliseconds
       useNativeDriver: false, // Must be false for layout properties like `bottom`
     }).start();
-  }, [userData]);
+  }, [userData, selectedValue]);
+
+  const animatedValue = useRef(new Animated.Value(0)).current;
+
+  // Continuous up-and-down animation
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(animatedValue, {
+          toValue: -10, // Move up by 10 pixels
+          duration: 1000, // Duration of upward movement
+          easing: Easing.inOut(Easing.linear), // Smooth linear easing
+          useNativeDriver: false,
+        }),
+        Animated.timing(animatedValue, {
+          toValue: 0, // Move down by 10 pixels
+          duration: 1000, // Duration of downward movement
+          easing: Easing.inOut(Easing.linear), // Smooth linear easing
+          useNativeDriver: false,
+        }),
+      ])
+    ).start();
+  }, [animatedValue]);
+
+  const animatedValue2 = useRef(new Animated.Value(0)).current;
+
+  // Continuous up-and-down animation
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.delay(500),
+        Animated.timing(animatedValue2, {
+          toValue: -10, // Move up by 10 pixels
+          duration: 1000, // Duration of upward movement
+          easing: Easing.inOut(Easing.linear), // Smooth linear easing
+          useNativeDriver: false,
+        }),
+        Animated.timing(animatedValue2, {
+          toValue: 0, // Move down by 10 pixels
+          duration: 1000, // Duration of downward movement
+          easing: Easing.inOut(Easing.linear), // Smooth linear easing
+          useNativeDriver: false,
+        }),
+      ])
+    ).start();
+  }, [animatedValue2]);
 
   return (
     <View
@@ -191,8 +268,8 @@ export default function WaterScreen() {
       <View style={styles.waveContainer3}>
         <Image source={wave1} style={styles.waveImage} />
       </View>
-      <TouchableOpacity onPress={handlePillSubmit}>
-        <Text>RESET</Text>
+      <TouchableOpacity style={styles.resetButton} onPress={handlePillSubmit}>
+        <Text style={styles.resetButtonText}>RESET</Text>
       </TouchableOpacity>
       <View style={styles.profileContainer}>
         {/* <View style={styles.waveContainer4}> */}
@@ -216,7 +293,6 @@ export default function WaterScreen() {
                 style={styles.picker}
                 onValueChange={(itemValue) => setWater(itemValue)}
               >
-                <Picker.Item label="0" value="0" />
                 <Picker.Item label="1 litre" value="1000" />
                 <Picker.Item label="1.5 litre" value="1500" />
                 <Picker.Item label="2 litre" value="2000" />
@@ -244,17 +320,37 @@ export default function WaterScreen() {
 
       <View style={styles.waterConsumed}>
         <View style={styles.largerCircle}>
-          <Text style={styles.mainLabel}>{userData}ml</Text>
+          {userData != "0" ? (
+            <Text style={styles.mainLabel}>{userData}ml</Text>
+          ) : (
+            <View></View>
+          )}
           <View style={styles.waveContainer4}>
             <Animated.Image
               source={wave2}
-              style={[styles.waveImage4, { bottom: animatedBottom }]}
+              style={[
+                styles.waveImage4,
+                {
+                  transform: [
+                    { translateY: animatedValue }, // Continuous animation
+                    { translateY: animatedBottom }, // UserData-driven animation
+                  ],
+                },
+              ]}
             />
           </View>
           <View style={styles.waveContainer5}>
             <Animated.Image
               source={wave3}
-              style={[styles.waveImage5, { bottom: animatedBottom }]}
+              style={[
+                styles.waveImage5,
+                {
+                  transform: [
+                    { translateY: animatedValue2 }, // Continuous animation
+                    { translateY: animatedBottom }, // UserData-driven animation
+                  ],
+                },
+              ]}
             />
           </View>
           {/* Replace with your image source */}
@@ -300,6 +396,33 @@ export default function WaterScreen() {
           </CircularProgressWithChild>
         </View>
       </View>
+      {showModal && (
+        <Modal transparent animationType="fade" visible={showModal}>
+          <View style={styles.modalContainer}>
+            {/* <ImageBackground
+              style={styles.modalContent}
+              source={require("../assets/images/water.png")}
+              resizeMode="cover"
+            > */}
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>🎉 Congratulations</Text>
+              <Text style={styles.modalText}>You reached your goal!</Text>
+              {/* <Button
+                style={styles.modalButton}
+                title="Close"
+                onPress={() => setShowModal(false)}
+              /> */}
+              <TouchableOpacity
+                onPress={() => setShowModal(false)}
+                style={styles.modalButton}
+              >
+                <Text style={styles.modalButtonText}>OK</Text>
+              </TouchableOpacity>
+            </View>
+            {/* </ImageBackground> */}
+          </View>
+        </Modal>
+      )}
     </View>
   );
 }
@@ -317,6 +440,19 @@ const styles = StyleSheet.create({
   backgroundImage: {
     zIndex: -1,
     width: width * 0.4,
+  },
+  resetButton: {
+    position: "absolute",
+    right: 30,
+    top: 30,
+
+    backgroundColor: "#f8f8f6",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 50,
+  },
+  resetButtonText: {
+    fontWeight: "400",
   },
   profileContainer: {
     width: "90%", // 90% of the screen width
@@ -517,37 +653,32 @@ const styles = StyleSheet.create({
     width: 180, // Increased size of the circle (previously was 100)
     height: 180, // Increased size of the circle (previously was 100)
     borderRadius: 90, // Make it a perfect circle (half of the width/height)
-    // overflow: "hidden", // Ensures the image stays within the circle
+    overflow: "hidden", // Ensures the image stays within the circle
     borderWidth: 7, // Optional: Add a border to the circle
     borderColor: "#ade5fc", // Blue border color
     backgroundColor: "#f3f9fb",
   },
   waveContainer4: {
     position: "absolute",
-    top: 20,
-    left: -50,
+    top: 150,
+    left: -190,
     zIndex: -1, // Place behind the main content
     justifyContent: "center",
     alignItems: "center",
 
-    width: width,
+    width: width * 1.9,
     height: height * 0.3,
-
-    // borderWidth: 7, // Optional: Add a border to the circle
-    // borderColor: "red", // Blue border color
     transform: [{ rotate: "-20deg" }],
   },
   waveContainer5: {
     position: "absolute",
-    right: -30,
-    top: 10,
+    top: 140,
+    left: -300,
     zIndex: -1, // Place behind the main content
     justifyContent: "center",
     alignItems: "center",
-    width: width,
+    width: width * 1.9,
     height: height * 0.3,
-    // borderWidth: 7, // Optional: Add a border to the circle
-    // borderColor: "pink", // Blue border color
     transform: [{ rotate: "25deg" }], // Rotate by 30 degrees
   },
   waveImage4: {
@@ -622,5 +753,43 @@ const styles = StyleSheet.create({
     color: "#000",
     // fontWeight: "bold",
     // marginBottom: 10,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    width: "80%",
+    padding: 20,
+    backgroundColor: "#51bff2",
+    borderRadius: 10,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#fff",
+    marginBottom: 10,
+  },
+  modalText: {
+    fontSize: 16,
+    textAlign: "center",
+    marginBottom: 20,
+    fontWeight: "bold",
+  },
+  modalButton: {
+    backgroundColor: "#fff",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+  },
+  modalButtonText: {
+    fontWeight: "bold",
   },
 });

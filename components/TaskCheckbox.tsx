@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import CheckBox from "react-native-checkbox"; // Use this instead
-import trash from "../assets/images/trash.png";
+import trash from "../assets/images/mdi_trash.png";
 // @ts-ignore
 
 interface TaskWithCheckboxProps {
@@ -58,6 +58,8 @@ const TaskWithCheckbox: React.FC<TaskWithCheckboxProps> = ({
           value={isChecked}
           onValueChange={(newValue: any) => setIsChecked(newValue)}
           style={styles.checkbox}
+          containerStyle={styles.checkboxContainer}
+          checkboxStyle={styles.checkbox}
           label={null}
           checked={isChecked}
           onChange={(checked: any) => handleToggle(!checked)}
@@ -82,13 +84,25 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 50,
     marginBottom: 10,
-    padding: 10,
+    // padding: 10,
     justifyContent: "space-between",
     borderBottomWidth: 1,
     borderColor: "#c2c2c2",
   },
+  checkboxContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: 28,
+    height: 28,
+    marginRight: 0,
+  },
   checkbox: {
-    marginRight: 10,
+    backgroundColor: "#fff",
+    width: 28,
+    height: 28,
+    borderWidth: 3,
+    borderColor: "#b5d8c2",
+    borderRadius: 9,
   },
   check: {
     width: 80,
@@ -96,10 +110,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   taskText: {
-    fontSize: 16,
+    fontSize: 18,
     color: "#333",
-    marginLeft: 15,
-    marginBottom: 10,
+    marginLeft: 10,
+    fontWeight: "bold",
   },
   completedText: {
     textDecorationLine: "line-through",

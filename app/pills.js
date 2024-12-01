@@ -1,6 +1,11 @@
 import CustomToggleSmall from "@/components/CustomToggleSmall";
 import { ThemedText } from "@/components/ThemedText";
-import { TouchableWithoutFeedback, Keyboard, Button } from "react-native";
+import {
+  TouchableWithoutFeedback,
+  Keyboard,
+  Button,
+  Vibration,
+} from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import bell from "../assets/images/bellIcon.png";
 import { useState, useEffect } from "react";
@@ -38,7 +43,7 @@ export default function PillsScreen() {
     // Prepare the data to send in the POST request
     const payload = {
       name: searchText, // The name entered by the user
-      dosage: "500mg", // Hardcoded dosage
+      dosage: amount, // Hardcoded dosage
       schedule: duration, // Hardcoded schedule (weekly in this case)
       amount: parseInt(amount, 10), // Hardcoded amount (defaulted to 1)
       time: time,
@@ -78,16 +83,18 @@ export default function PillsScreen() {
     now.setSeconds(0);
     console.log("now", now);
     const trigger = new Date(now); // Assuming 'time' is a valid Date string or object
-
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: "Medication reminder",
-        body: `${payload.name}`,
-      },
-      trigger,
-    });
-
-    console.log("Local notification scheduled for:", trigger);
+    // await Notifications.cancelAllScheduledNotificationsAsync();
+    // await Notifications.scheduleNotificationAsync({
+    //   content: {
+    //     title: "💊 Medication reminder!",
+    //     body: `${payload.name}, Amount: ${payload.dosage}`,
+    //   },
+    //   trigger,
+    // });
+    // console.log("Local notification scheduled for:", trigger);
+    // const notifications =
+    //   await Notifications.getAllScheduledNotificationsAsync();
+    // console.log("Scheduled notifications:", notifications);
   }
   const handlePillSubmit = async () => {
     // Check if the input value is not empty
@@ -99,7 +106,7 @@ export default function PillsScreen() {
     // Prepare the data to send in the POST request
     const payload = {
       name: searchText, // The name entered by the user
-      dosage: "500mg",
+      dosage: amount,
       schedule: duration,
       amount: parseInt(amount, 10),
       time: alarmString, // Hardcoded time
@@ -134,6 +141,39 @@ export default function PillsScreen() {
       alert("An error occurred while adding the medicine.");
     }
   };
+
+  // Uncomment for local notifications: Part 3/3
+  useEffect(() => {
+    // Handle notifications received when the app is open
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+      }),
+    });
+
+    // Listener for when a notification is received
+    const notificationListener = Notifications.addNotificationReceivedListener(
+      () => {
+        console.log("Notification received! Triggering vibration...");
+        Vibration.vibrate(500); // Vibrate for 500ms
+      }
+    );
+
+    // Optional: Listener for when a notification is responded to
+    const responseListener =
+      Notifications.addNotificationResponseReceivedListener(() => {
+        console.log("Notification interacted with!");
+        // You can add additional behavior for user interaction here
+      });
+
+    // Clean up listeners
+    return () => {
+      notificationListener.remove();
+      responseListener.remove();
+    };
+  }, []);
 
   // State to hold the medicine data
   const [medicines, setMedicines] = useState([]);
@@ -278,11 +318,11 @@ export default function PillsScreen() {
                 style={styles.picker}
                 onValueChange={(itemValue) => setAmount(itemValue)}
               >
-                <Picker.Item label="10mg" value="1" />
-                <Picker.Item label="20mg" value="2" />
-                <Picker.Item label="30mg" value="3" />
-                <Picker.Item label="40mg" value="4" />
-                <Picker.Item label="50mg" value="5" />
+                <Picker.Item label="1" value="1" />
+                <Picker.Item label="2" value="2" />
+                <Picker.Item label="3" value="3" />
+                <Picker.Item label="4" value="4" />
+                <Picker.Item label="5" value="5" />
               </Picker>
             </View>
           </View>
@@ -426,9 +466,9 @@ export default function PillsScreen() {
               modalTitle=""
               onCancel={() => setShowPicker(false)}
               closeOnOverlayPress
-              styles={{ theme: "dark" }}
+              styles={{ theme: "light" }}
               modalProps={{
-                overlayOpacity: 0.2,
+                overlayOpacity: 0.4,
               }}
             />
           </View>
