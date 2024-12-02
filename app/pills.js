@@ -25,6 +25,7 @@ import oldWoman from "../assets/images/oldWoman.png";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { TimerPickerModal } from "react-native-timer-picker";
 import * as Notifications from "expo-notifications";
+import { useAvatar } from "./AvatarContext";
 
 export default function PillsScreen() {
   const [selectedValue, setSelectedValue] = useState("1");
@@ -32,6 +33,8 @@ export default function PillsScreen() {
   const [duration, setDuration] = useState("weekly");
   const [isPickerVisible, setPickerVisible] = useState(false);
   const [toggleState, setToggleState] = useState("schedule"); // "schedule" or "clock"
+
+  const { currentAvatar, setCurrentAvatar } = useAvatar();
 
   const handleOnlyPillSubmit = async () => {
     // Check if the input value is not empty
@@ -257,7 +260,7 @@ export default function PillsScreen() {
             </View>
             <View style={styles.rightColumn}>
               <View style={styles.circle}>
-                <Image source={oldWoman} style={styles.circleImage} />
+                <Image source={currentAvatar} style={styles.circleImage} />
               </View>
             </View>
           </View>
@@ -695,6 +698,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     zIndex: -1,
+    overflow: "hidden",
   },
   circleImage: {
     width: "100%",

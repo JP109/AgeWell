@@ -14,11 +14,13 @@ import {
 import { useRouter } from "expo-router";
 import loginBg from "../assets/images/welcome-logo.png";
 import title from "../assets/images/title.png";
+import { AvatarProvider } from "./AvatarContext";
 
 export default function LandingPage() {
   const router = useRouter();
 
   return (
+    // <AvatarProvider>
     <View style={styles.container}>
       <Image source={title} style={styles.titleImage} />
       <Image source={loginBg} style={styles.backgroundImage} />
@@ -35,6 +37,7 @@ export default function LandingPage() {
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
     </View>
+    // </AvatarProvider>
   );
 }
 

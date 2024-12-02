@@ -12,13 +12,13 @@ const { width } = Dimensions.get("window");
 
 const CustomToggle = ({ isToggled, onToggle }) => {
   const position = useState(
-    new Animated.Value(isToggled ? width * 0.45 : 0)
+    new Animated.Value(isToggled ? width * 0.35 : 0)
   )[0];
 
   // Update the slide animation based on the new state
   React.useEffect(() => {
     Animated.timing(position, {
-      toValue: isToggled ? width * 0.45 : 0,
+      toValue: isToggled ? width * 0.35 : 0,
       duration: 300,
       useNativeDriver: true,
     }).start();
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   toggleContainer: {
-    width: "80%", // Adjust width as needed
+    width: "70%", // Adjust width as needed
     height: width * 0.12, // Adjust height as needed
     backgroundColor: "#e0e0e0", // Light gray background
     borderRadius: width * 0.06, // Rounded corners (50% of height for circular look)
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "50%", // The width of the sliding indicator (half the width of the container)
     height: "100%",
-    backgroundColor: "#4caf50", // Green indicator color
+    backgroundColor: "#55a377", // Green indicator color
     borderRadius: width * 0.06, // Rounded corners for the indicator
     zIndex: -1, // Ensure the indicator is behind the text
   },

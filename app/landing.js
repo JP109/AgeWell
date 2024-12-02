@@ -155,9 +155,9 @@ export default function LandingScreen() {
           <View style={styles.titleContainer} lightColor="#f5fbf3">
             <Text type="title" style={styles.titleText}>
               {" "}
-              Daily Log{" "}
+              Daily Log
             </Text>
-            <Icon name="clock-o" size={20} color="#000" />
+            <Icon name="clock-o" size={30} color="#000" />
           </View>
 
           {/* Toggle between "Tasks" and "Done" */}
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   addButton: {
-    backgroundColor: "#4caf50",
+    backgroundColor: "#55a377",
     borderRadius: 50,
     width: 50,
     height: 50,

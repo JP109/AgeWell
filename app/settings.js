@@ -9,8 +9,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import back from "../assets/images/chevron.png";
 import lock from "../assets/images/lock.png";
-import question from "../assets/images/question.png";
 import settings from "../assets/images/settings.png";
 import wave1 from "../assets/images/wave7.png";
 
@@ -26,6 +26,12 @@ export default function SettingsScreen() {
           <Image source={wave1} style={styles.waveImage} />
         </View>
         <View style={styles.titleContainer} lightColor="#f5fbf3">
+          <TouchableOpacity
+            style={styles.iconContainerBack}
+            onPress={() => router.push("/home")}
+          >
+            <Image source={back} style={styles.backButton} />
+          </TouchableOpacity>
           <Text type="title" style={styles.titleText}>
             {" "}
             Settings{" "}
@@ -140,6 +146,18 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   iconImage: {
+    maxHeight: "100%",
+    maxWidth: "100%",
+    resizeMode: "contain",
+  },
+  iconContainerBack: {
+    width: 15,
+    height: 15,
+    // position: "absolute",
+    // left: 30,
+    // top: 30,
+  },
+  backButton: {
     maxHeight: "100%",
     maxWidth: "100%",
     resizeMode: "contain",
