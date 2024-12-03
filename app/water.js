@@ -1,28 +1,21 @@
+import { Picker } from "@react-native-picker/picker"; // Correct import
+import { useEffect, useRef, useState } from "react";
 import {
+  Animated,
   Dimensions,
+  Easing,
+  Image,
+  Modal,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Image,
-  Alert,
-  Animated,
-  Easing,
-  Modal,
-  Button,
-  ImageBackground,
 } from "react-native";
-import { useState, useEffect, useRef } from "react";
-import { Picker } from "@react-native-picker/picker"; // Correct import
-import water from "../assets/images/water.png";
+import { CircularProgressWithChild } from "react-native-circular-progress-indicator";
 import wave1 from "../assets/images/mesh.png";
-import wave2 from "../assets/images/Vector2.png";
 import wave3 from "../assets/images/Vector1.png";
-import {
-  ProgressCircle,
-  CircularProgressWithChild,
-} from "react-native-circular-progress-indicator";
-import * as ProgressIndicator from "react-native-circular-progress-indicator";
+import wave2 from "../assets/images/Vector2.png";
+import water from "../assets/images/water.png";
 
 // import ProgressCircle from "react-native-progress-circle"; // Correct import
 
@@ -274,8 +267,30 @@ export default function WaterScreen() {
       <View style={styles.profileContainer}>
         {/* <View style={styles.waveContainer4}> */}
 
-        <Image source={wave2} style={styles.waveImage2} />
-        <Image source={wave3} style={styles.waveImage3} />
+        <Animated.Image
+          source={wave2}
+          style={[
+            styles.waveImage2,
+            {
+              transform: [
+                { translateY: animatedValue }, // Continuous animation
+                // { translateY: animatedBottom }, // UserData-driven animation
+              ],
+            },
+          ]}
+        />
+        <Animated.Image
+          source={wave3}
+          style={[
+            styles.waveImage3,
+            {
+              transform: [
+                { translateY: animatedValue2 }, // Continuous animation
+                // { translateY: animatedBottom }, // UserData-driven animation
+              ],
+            },
+          ]}
+        />
         {/* </View> */}
         {/* Left column */}
         <View style={styles.leftColumn}>
@@ -293,6 +308,11 @@ export default function WaterScreen() {
                 style={styles.picker}
                 onValueChange={(itemValue) => setWater(itemValue)}
               >
+                <Picker.Item
+                  label="Select hydration level"
+                  value=""
+                  enabled={false}
+                />
                 <Picker.Item label="1 litre" value="1000" />
                 <Picker.Item label="1.5 litre" value="1500" />
                 <Picker.Item label="2 litre" value="2000" />
@@ -317,7 +337,6 @@ export default function WaterScreen() {
           </View>
         </View>
       </View>
-
       <View style={styles.waterConsumed}>
         <View style={styles.largerCircle}>
           {userData != "0" ? (
@@ -332,7 +351,7 @@ export default function WaterScreen() {
                 styles.waveImage4,
                 {
                   transform: [
-                    { translateY: animatedValue }, // Continuous animation
+                    // { translateY: animatedValue }, // Continuous animation
                     { translateY: animatedBottom }, // UserData-driven animation
                   ],
                 },
@@ -346,7 +365,7 @@ export default function WaterScreen() {
                 styles.waveImage5,
                 {
                   transform: [
-                    { translateY: animatedValue2 }, // Continuous animation
+                    // { translateY: animatedValue2 }, // Continuous animation
                     { translateY: animatedBottom }, // UserData-driven animation
                   ],
                 },
@@ -359,7 +378,7 @@ export default function WaterScreen() {
       </View>
       <View style={styles.newView}>
         <View style={styles.pickerContainer}>
-          <Text style={styles.targetLabel}>Target</Text>
+          <Text style={styles.targetLabel2}>Target</Text>
           {/* Picker Dropdown */}
           <Picker
             selectedValue={selectedValue}
@@ -468,6 +487,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     position: "relative",
     overflow: "hidden",
+
+    shadowColor: "#69707E",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 5,
   },
   leftColumn: {
     flex: 2, // Takes up the remaining space
@@ -532,7 +557,7 @@ const styles = StyleSheet.create({
     width: 150, // Explicitly set width to control the button's size
   },
   pillButtonText: {
-    color: "#000", // White text color for contrast
+    color: "#69707E", // White text color for contrast
     fontSize: 13, // Font size for the text
     color: "#79838b",
     fontWeight: "bold",
@@ -554,13 +579,15 @@ const styles = StyleSheet.create({
   targetLabel: {
     fontSize: 13,
     color: "#fff",
+    color: "#69707E",
+    fontWeight: "bold",
     // fontWeight: "bold",
     // marginBottom: 10,
   },
   mainLabel: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#000",
+    color: "#69707E",
     position: "absolute",
     left: 50,
     top: 70,
@@ -575,6 +602,12 @@ const styles = StyleSheet.create({
   picker: {
     width: "100%",
     color: "#fff", // White text color for the items in the picker
+
+    shadowColor: "#69707E",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 5,
   },
   waveContainer1: {
     position: "absolute",
@@ -657,6 +690,12 @@ const styles = StyleSheet.create({
     borderWidth: 7, // Optional: Add a border to the circle
     borderColor: "#ade5fc", // Blue border color
     backgroundColor: "#f3f9fb",
+
+    shadowColor: "#69707E",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 5,
   },
   waveContainer4: {
     position: "absolute",
@@ -747,8 +786,8 @@ const styles = StyleSheet.create({
     height: 50,
     color: "#000", // White text color for the items in the picker
   },
-  targetLabel: {
-    fontSize: 13,
+  targetLabel2: {
+    fontSize: 16,
     fontWeight: "bold",
     color: "#000",
     // fontWeight: "bold",
@@ -766,7 +805,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#51bff2",
     borderRadius: 10,
     alignItems: "center",
-    shadowColor: "#000",
+    shadowColor: "#69707E",
     shadowOpacity: 0.5,
     shadowRadius: 10,
     elevation: 5,

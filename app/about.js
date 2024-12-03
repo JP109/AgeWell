@@ -1,21 +1,35 @@
 // LandingScreen.js
 
 import { useRouter } from "expo-router";
-import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
-import wave1 from "../assets/images/wave7.png";
+import {
+  Dimensions,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import back from "../assets/images/chevron.png";
 
-export default function PrivacyScreen() {
+export default function AboutScreen() {
   const router = useRouter();
   return (
-    <View style={styles.mainContainer}>
+    <ScrollView style={styles.mainContainer}>
       <View>
-        <View style={styles.waveContainer2}>
+        {/* <View style={styles.waveContainer2}>
           <Image source={wave1} style={styles.waveImage} />
         </View>
         <View style={styles.waveContainer3}>
           <Image source={wave1} style={styles.waveImage} />
-        </View>
+        </View> */}
         <View style={styles.titleContainer} lightColor="#f5fbf3">
+          <TouchableOpacity
+            style={styles.iconContainerBack}
+            onPress={() => router.push("/settings")}
+          >
+            <Image source={back} style={styles.backButton} />
+          </TouchableOpacity>
           <Text type="title" style={styles.titleText}>
             {" "}
             About{" "}
@@ -23,33 +37,48 @@ export default function PrivacyScreen() {
         </View>
         <View style={styles.rowContainer}>
           <View>
-            <Text style={styles.headingText}>1. Types data we collect</Text>
+            {/* <Text style={styles.headingText}>1. Types data we collect</Text> */}
             <Text style={styles.bodyText}>
-              Our mobile app is committed to protecting your privacy and only
-              collects essential information to enhance your experience. When
-              you create an account, we may ask for your name and email address,
-              but you can choose to limit the personal information you provide.
-              We also collect usage data, such as device ID and the features you
-              access within the app, to improve our services while minimizing
-              the data collected.
+              At AgeWell, we are driven by the belief that technology can bridge
+              the gap between independence and support, particularly for the
+              elderly. Our mission is to simplify daily life by offering tools
+              that promote health, organization, and well-being—all within a
+              seamless, easy-to-use application. The AgeWell app is thoughtfully
+              designed to cater to the unique needs of older adults. Whether
+              it’s managing daily chores, tracking hydration, or receiving
+              timely pill reminders, our goal is to make every feature intuitive
+              and empowering. By focusing on simplicity and accessibility, we
+              ensure that even users who are less familiar with technology can
+              easily navigate and benefit from our app.
             </Text>
           </View>
         </View>
         <View style={styles.rowContainer}>
           <View>
-            <Text style={styles.headingText}>2. Use of your personal data</Text>
+            {/* <Text style={styles.headingText}>2. Use of your personal data</Text> */}
             <Text style={styles.bodyText}>
-              We use your personal data to provide and enhance our services,
-              ensuring a better user experience. Your information may be used
-              for account management, to facilitate in-app features, and to
-              communicate important updates or promotional offers that may be of
-              interest to you, provided you have opted in to receive such
-              communications.
+              Our journey to create AgeWell has been an incredible collaborative
+              effort. From brainstorming concepts to executing the final design,
+              our team has worked tirelessly to bring this vision to life. Using
+              Figma for prototyping and interface design, React Native for
+              cross-platform development, and Node.js, Express.js, and MongoDB
+              for building a reliable backend, every step of the process has
+              been a testament to our dedication to excellence. What sets
+              AgeWell apart is not just the technology behind it but also the
+              heart and thoughtfulness that went into its creation. Our team is
+              passionate about creating solutions that truly matter. We have
+              prioritized essential features for our MVP to ensure the app meets
+              its core objectives effectively, with a strong foundation for
+              future enhancements. AgeWell is more than an app—it’s a commitment
+              to fostering independence, simplifying routines, and enhancing the
+              quality of life for our users. With your feedback and continued
+              support, we’re excited to grow, improve, and make AgeWell a
+              trusted companion for every user who needs it.
             </Text>
           </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -110,18 +139,21 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 25,
-    color: "#333",
+    color: "#69707E",
     fontWeight: "bold",
   },
   headingText: {
     fontSize: 19,
     fontWeight: "bold",
+    color: "#69707E",
   },
   bodyText: {
     fontSize: 16,
+    color: "#69707E",
   },
   rowContainer: {
     marginTop: 30,
+    color: "#69707E",
   },
   row: {
     display: "flex",
@@ -139,6 +171,18 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   iconImage: {
+    maxHeight: "100%",
+    maxWidth: "100%",
+    resizeMode: "contain",
+  },
+  iconContainerBack: {
+    width: 15,
+    height: 15,
+    // position: "absolute",
+    // left: 30,
+    // top: 30,
+  },
+  backButton: {
     maxHeight: "100%",
     maxWidth: "100%",
     resizeMode: "contain",

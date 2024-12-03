@@ -1,6 +1,7 @@
 // app/index.js
 
 import React from "react";
+import { LogBox } from "react-native";
 // import { AvatarProvider } from "./AvatarContext";
 import {
   View,
@@ -17,6 +18,7 @@ import title from "../assets/images/title.png";
 import { AvatarProvider } from "./AvatarContext";
 
 export default function LandingPage() {
+  LogBox.ignoreAllLogs();
   const router = useRouter();
 
   return (

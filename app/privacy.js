@@ -123,15 +123,17 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 25,
-    color: "#333",
+    color: "#69707E",
     fontWeight: "bold",
   },
   headingText: {
     fontSize: 19,
     fontWeight: "bold",
+    color: "#69707E",
   },
   bodyText: {
     fontSize: 16,
+    color: "#69707E",
   },
   rowContainer: {
     marginTop: 30,

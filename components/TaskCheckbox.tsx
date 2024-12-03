@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   },
   taskText: {
     fontSize: 18,
-    color: "#333",
+    color: "#69707E",
     marginLeft: 10,
     fontWeight: "bold",
   },

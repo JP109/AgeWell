@@ -10,7 +10,9 @@ import {
   View,
 } from "react-native";
 import back from "../assets/images/chevron.png";
+import front from "../assets/images/chevron-right.png";
 import lock from "../assets/images/lock.png";
+import about from "../assets/images/about.png";
 import settings from "../assets/images/settings.png";
 import wave1 from "../assets/images/wave7.png";
 
@@ -46,9 +48,25 @@ export default function SettingsScreen() {
               <View style={styles.iconContainer}>
                 <Image source={lock} style={styles.iconImage} />
               </View>
-              <Text type="title" style={styles.titleText}>
+              <Text type="title" style={styles.subtitleText}>
                 Privacy Policy
               </Text>
+              <View style={styles.iconContainerFront}>
+                <Image source={front} style={styles.backButton} />
+              </View>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/about")}>
+            <View style={styles.row}>
+              <View style={styles.iconContainer}>
+                <Image source={about} style={styles.iconImage} />
+              </View>
+              <Text type="title" style={styles.subtitleText}>
+                About
+              </Text>
+              <View style={styles.iconContainerFront}>
+                <Image source={front} style={styles.backButton} />
+              </View>
             </View>
           </TouchableOpacity>
           {/* <TouchableOpacity onPress={() => router.push("/about")}>
@@ -96,7 +114,7 @@ const styles = StyleSheet.create({
   waveContainer3: {
     position: "absolute",
     right: -150,
-    bottom: -200,
+    bottom: -500,
     zIndex: -1, // Place behind the main content
     justifyContent: "center",
     alignItems: "center",
@@ -124,7 +142,12 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 25,
-    color: "#333",
+    color: "#69707E",
+    fontWeight: "bold",
+  },
+  subtitleText: {
+    fontSize: 22,
+    color: "#69707E",
     fontWeight: "bold",
   },
   rowContainer: {
@@ -135,14 +158,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "100%",
     paddingLeft: 20,
-    marginBottom: 10,
+    marginBottom: 35,
     borderBottomWidth: 1,
-    borderColor: "gray",
+    borderColor: "#69707E",
   },
   iconContainer: {
     width: 25,
     height: 25,
-    marginRight: 10,
+    marginRight: 20,
     marginTop: 2,
   },
   iconImage: {
@@ -156,6 +179,15 @@ const styles = StyleSheet.create({
     // position: "absolute",
     // left: 30,
     // top: 30,
+  },
+  iconContainerFront: {
+    // marginTop: 8,
+    // marginLeft: 10,
+    width: 15,
+    height: 15,
+    position: "absolute",
+    right: 10,
+    top: 5,
   },
   backButton: {
     maxHeight: "100%",

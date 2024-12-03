@@ -1,18 +1,18 @@
 // LandingScreen.js
 
 import { useRouter } from "expo-router";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Dimensions,
   Image,
+  ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
-  ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import settings from "../assets/images/pills.png";
-import wave1 from "../assets/images/wave7.png";
+import back from "../assets/images/chevron.png";
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -43,6 +43,12 @@ export default function SettingsScreen() {
           <Image source={wave1} style={styles.waveImage} />
         </View> */}
         <View style={styles.titleContainer} lightColor="#f5fbf3">
+          <TouchableOpacity
+            style={styles.iconContainerBack}
+            onPress={() => router.push("/home")}
+          >
+            <Image source={back} style={styles.backButton} />
+          </TouchableOpacity>
           <Text type="title" style={styles.titleText}>
             {" "}
             Medication Schedules{" "}
@@ -161,6 +167,18 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   iconImage: {
+    maxHeight: "100%",
+    maxWidth: "100%",
+    resizeMode: "contain",
+  },
+  iconContainerBack: {
+    width: 15,
+    height: 15,
+    // position: "absolute",
+    // left: 30,
+    // top: 30,
+  },
+  backButton: {
     maxHeight: "100%",
     maxWidth: "100%",
     resizeMode: "contain",

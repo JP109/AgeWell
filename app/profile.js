@@ -5,7 +5,7 @@ import { View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import edit from "../assets/images/edit-line.png";
+import edit from "../assets/images/edit.png";
 import settings from "../assets/images/settings.png";
 import { useAvatar } from "./AvatarContext";
 
@@ -49,8 +49,7 @@ export default function ProfileScreen() {
       colors={["#cdf7c0", "#b6e7f5"]} // Start color and end color for the gradient
       style={styles.mainContainer} // Apply the gradient to the main container
     >
-      <View style={styles.profileContainer}>
-        {/* Left column */}
+      {/* <View style={styles.profileContainer}>
         <View style={styles.leftColumn}>
           <View style={styles.row}>
             <Text style={styles.titleText}>Name</Text>
@@ -60,13 +59,8 @@ export default function ProfileScreen() {
             <Text style={styles.titleText}>Joined</Text>
             <Text style={styles.titlebText}>Nov 2024</Text>
           </View>
-          <View style={styles.row}>
-            <Text style={styles.titleText}>Emergency Contact</Text>
-            <Text style={styles.titlebText}>Abhishek</Text>
-          </View>
         </View>
 
-        {/* Right column with circle image */}
         <View style={styles.rightColumn}>
           <TouchableOpacity onPress={() => router.push("/settings")}>
             <View style={styles.settingsButton}>
@@ -82,9 +76,31 @@ export default function ProfileScreen() {
             </View>
           </TouchableOpacity>
         </View>
+      </View> */}
+
+      <View style={styles.profileContainer}>
+        <View style={styles.rightColumnAvatar}>
+          <TouchableOpacity onPress={() => router.push("/settings")}>
+            <View style={styles.settingsButton}>
+              <Image source={settings} style={styles.editButtonImg} />
+            </View>
+          </TouchableOpacity>
+          <View style={styles.circle}>
+            <Image source={currentAvatar} style={styles.circleImage} />
+          </View>
+          <TouchableOpacity onPress={() => setScreen("avatar")}>
+            <View style={styles.editButton}>
+              <Image source={edit} style={styles.editButtonImg} />
+            </View>
+          </TouchableOpacity>
+          {/* <Text style={styles.hi}>Hi</Text> */}
+          <Text style={styles.jai}>{userData?.profile.name}</Text>
+          <Text style={styles.joined}>Joined</Text>
+          <Text style={styles.nov}>Nov 2024</Text>
+        </View>
       </View>
 
-      <View style={styles.vitalsGrid}>
+      <View style={styles.vitalsGridTop}>
         <TouchableOpacity
           style={styles.vitalsContainer}
           onPress={() => router.push("/schedules")}
@@ -105,7 +121,8 @@ export default function ProfileScreen() {
           <Text style={styles.titleText}>Water Intake</Text>
         </View>
         <View style={styles.vitalsContainer}>
-          <Text style={styles.subtitleText}>{userData?.waterTarget}</Text>
+          {/* <Text style={styles.subtitleText}>{userData?.waterTarget}</Text> */}
+          <Text style={styles.subtitleText}>4000 ml</Text>
           <Text style={styles.titleText}>Water Target</Text>
         </View>
       </View>
@@ -185,22 +202,36 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: "#f5fbf3",
-    paddingTop: 10, // Adds space at the top of the screen (adjust as needed)
-    paddingHorizontal: 16, // Adds some padding on the left and right
+    // paddingTop: 10, // Adds space at the top of the screen (adjust as needed)
+    // paddingHorizontal: 16, // Adds some padding on the left and right
   },
   profileContainer: {
-    width: "90%", // 90% of the screen width
-    height: width * 0.6, // Fixed height of 20 (you can adjust this if needed)
-    borderRadius: 20, // Border radius for rounded corners (adjust as needed)
-    marginHorizontal: "5%", // To center the container horizontally, using 5% on both sides
+    // width: "90%", // 90% of the screen width
+    // height: width * 0.6, // Fixed height of 20 (you can adjust this if needed)
+    // borderRadius: 20, // Border radius for rounded corners (adjust as needed)
+    // marginHorizontal: "5%", // To center the container horizontally, using 5% on both sides
+    // paddingHorizontal: "5%", // To center the container horizontally, using 5% on both sides
+    // paddingVertical: "10%", // To center the container horizontally, using 5% on both sides
+    // backgroundColor: "#fff",
+    // marginTop: 50,
+    // marginBottom: 30,
+
+    // display: "flex",
+    // flexDirection: "row",
+
+    width: "100%", // 90% of the screen width
+    height: width * 0.8, // Fixed height of 20 (you can adjust this if needed)
     paddingHorizontal: "5%", // To center the container horizontally, using 5% on both sides
-    paddingVertical: "10%", // To center the container horizontally, using 5% on both sides
     backgroundColor: "#fff",
-    marginTop: 50,
-    marginBottom: 30,
+    borderBottomLeftRadius: 250,
+    borderBottomRightRadius: 250,
 
     display: "flex",
     flexDirection: "row",
+
+    backgroundColor: "#fff",
+
+    marginBottom: 20,
   },
   leftColumn: {
     flex: 1, // Takes up the remaining space
@@ -231,16 +262,16 @@ const styles = StyleSheet.create({
   },
   editButton: {
     position: "absolute",
-    top: -20,
-    right: -70,
+    top: -30,
+    right: -60,
     height: 25,
     width: 25,
     // overflow: "hidden",
   },
   settingsButton: {
     position: "absolute",
-    top: -30,
-    right: -70,
+    top: -15,
+    right: -160,
     height: 20,
     width: 20,
   },
@@ -424,5 +455,32 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     resizeMode: "cover",
+  },
+  hi: {
+    fontSize: 25,
+    color: "#69707E",
+    fontWeight: "bold",
+    // fontFamily: "menlo",
+    marginTop: 5,
+  },
+  jai: {
+    fontSize: 28,
+    color: "#69707E",
+    fontWeight: "bold",
+    // fontFamily: "menlo",
+    marginTop: 20,
+  },
+  joined: {
+    color: "#69707E",
+  },
+  nov: {
+    color: "#69707E",
+  },
+  vitalsGridTop: {
+    marginTop: 20,
+    width: "100%",
+    flexDirection: "row", // This ensures side-by-side layout
+    justifyContent: "space-evenly", // Distributes space between the two containers
+    marginTop: 20, // Optional: adds space between the profile and vitals grid
   },
 });

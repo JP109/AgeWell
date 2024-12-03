@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import bell from "../assets/images/bellIcon.png";
+import { LogBox } from "react-native";
 import { useState, useEffect } from "react";
 import {
   Dimensions,
@@ -86,18 +87,19 @@ export default function PillsScreen() {
     now.setSeconds(0);
     console.log("now", now);
     const trigger = new Date(now); // Assuming 'time' is a valid Date string or object
-    // await Notifications.cancelAllScheduledNotificationsAsync();
-    // await Notifications.scheduleNotificationAsync({
-    //   content: {
-    //     title: "💊 Medication reminder!",
-    //     body: `${payload.name}, Amount: ${payload.dosage}`,
-    //   },
-    //   trigger,
-    // });
-    // console.log("Local notification scheduled for:", trigger);
-    // const notifications =
-    //   await Notifications.getAllScheduledNotificationsAsync();
-    // console.log("Scheduled notifications:", notifications);
+    await Notifications.cancelAllScheduledNotificationsAsync();
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "💊 Time to take your meds!",
+        // body: `${payload.name}, Amount: ${payload.dosage}`,
+        body: `Take ${payload.dosage} ${payload.name} now`,
+      },
+      trigger,
+    });
+    console.log("Local notification scheduled for:", trigger);
+    const notifications =
+      await Notifications.getAllScheduledNotificationsAsync();
+    console.log("Scheduled notifications:", notifications);
   }
   const handlePillSubmit = async () => {
     // Check if the input value is not empty
@@ -147,6 +149,7 @@ export default function PillsScreen() {
 
   // Uncomment for local notifications: Part 3/3
   useEffect(() => {
+    LogBox.ignoreAllLogs();
     // Handle notifications received when the app is open
     Notifications.setNotificationHandler({
       handleNotification: async () => ({
@@ -273,7 +276,7 @@ export default function PillsScreen() {
           <View style={styles.ddContainer}>
             <Image
               source={require("../assets/images/handPills.png")}
-              style={styles.iconPills}
+              style={styles.icon2}
             />
             <TextInput
               style={styles.ddInput}
@@ -355,7 +358,7 @@ export default function PillsScreen() {
         </View>
 
         {/* Notifications Title */}
-        <Text type="title" style={styles.subtitle}>
+        <Text type="title" style={styles.subtitleNotif}>
           Notifications
         </Text>
 
@@ -534,7 +537,7 @@ const styles = StyleSheet.create({
     color: "#F1F1F1",
   },
   alarmTime: {
-    color: "#000",
+    color: "#69707e",
     fontSize: 18,
     textAlign: "center",
     // marginVertical: 10,
@@ -721,12 +724,13 @@ const styles = StyleSheet.create({
   },
   picker: {
     width: "100%",
-    color: "#000",
+    color: "#69707e",
     zIndex: -1,
+    marginHorizontal: 5,
   },
   pickerItem: {
     fontSize: 16,
-    color: "#000",
+    color: "#69707e",
     zIndex: -1,
   },
   modalOverlay: {
@@ -760,11 +764,12 @@ const styles = StyleSheet.create({
     // width: "100%", // 30% of the screen width
     height: 50,
     paddingLeft: 25,
+    marginRight: 5,
   },
   picker: {
     width: "100%",
     // height: "100%",
-    color: "#000", // Black text color for the items in the picker
+    color: "#69707e", // Black text color for the items in the picker
     borderRadius: 25, // Rounded corners for the picker itself
     paddingVertical: 5, // Padding to make the text appear centered
   },
@@ -776,9 +781,18 @@ const styles = StyleSheet.create({
   },
   column: {
     flex: 1, // Each column takes up 50% of the row
-    marginHorizontal: 8, // Space between columns
+    // marginHorizontal: 8, // Space between columns
   },
   icon: {
+    width: 18, // Adjust the width of the icon
+    height: 18, // Adjust the height of the icon
+    marginRight: 10, // Adds space between the icon and the picker
+    zIndex: 20,
+    position: "absolute",
+    top: 15,
+    left: 10,
+  },
+  icon2: {
     width: 20, // Adjust the width of the icon
     height: 20, // Adjust the height of the icon
     marginRight: 10, // Adds space between the icon and the picker
@@ -823,7 +837,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8f8f6", // Light background for inactive buttons
     borderRadius: 10, // Optional: rounded corners
     margin: 5, // Add space between buttons
-    shadowColor: "#000", // Color of the shadow
+    shadowColor: "#69707e", // Color of the shadow
     shadowOffset: { width: 0, height: 4 }, // Offset of the shadow (horizontal, vertical)
     shadowOpacity: 0.3, // Opacity of the shadow
     shadowRadius: 6, // Radius of the shadow blur
@@ -831,7 +845,7 @@ const styles = StyleSheet.create({
   },
   activeButton: {
     backgroundColor: "#55a377", // Blue background for the active button
-    shadowColor: "#000", // Maintain shadow for active state
+    shadowColor: "#69707e", // Maintain shadow for active state
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.5, // Stronger shadow when active
     shadowRadius: 8, // Slightly stronger blur on active button
@@ -860,7 +874,7 @@ const styles = StyleSheet.create({
     borderRadius: 25, // Pill shape (half of width/height)
     padding: 15,
     margin: 5, // Space between buttons
-    // shadowColor: "#000", // Shadow color
+    // shadowColor: "#69707e", // Shadow color
     // shadowOffset: { width: 0, height: 4 }, // Shadow offset
     // shadowOpacity: 0.3, // Shadow opacity
     // shadowRadius: 6, // Shadow blur
@@ -922,7 +936,7 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#000",
+    shadowColor: "#69707e",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
@@ -940,9 +954,15 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#000",
+    color: "#69707e",
     zIndex: -1,
     marginBottom: 10,
+  },
+  subtitleNotif: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#69707e",
+    zIndex: -1,
   },
   bellIcon: {
     width: "100%",
@@ -971,8 +991,8 @@ const styles = StyleSheet.create({
     width: 24, // Adjust the width of the icon
     height: 24, // Adjust the height of the icon
     top: -1,
-    tintColor: "#000",
-    color: "#000",
+    tintColor: "#69707e",
+    color: "#69707e",
   },
 
   mealIconActive: {

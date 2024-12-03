@@ -12,13 +12,13 @@ const { width } = Dimensions.get("window");
 
 const CustomToggle = ({ isToggled, onToggle }) => {
   const position = useState(
-    new Animated.Value(isToggled ? width * 0.35 : 0)
+    new Animated.Value(isToggled ? width * 0.25 : 0)
   )[0];
 
   // Update the slide animation based on the new state
   React.useEffect(() => {
     Animated.timing(position, {
-      toValue: isToggled ? width * 0.35 : 0,
+      toValue: isToggled ? width * 0.25 : 0,
       duration: 300,
       useNativeDriver: true,
     }).start();
@@ -28,7 +28,15 @@ const CustomToggle = ({ isToggled, onToggle }) => {
     <View style={styles.container}>
       <TouchableOpacity style={styles.toggleContainer} onPress={onToggle}>
         {/* "Task" Text */}
-        <Text style={[styles.toggleText, styles.taskText]}>Task</Text>
+        <Text
+          style={[
+            styles.toggleText,
+            styles.taskText,
+            { color: isToggled ? "#55a377" : "#fff" },
+          ]}
+        >
+          To Do
+        </Text>
 
         {/* Animated Sliding Indicator */}
         <Animated.View
@@ -41,7 +49,15 @@ const CustomToggle = ({ isToggled, onToggle }) => {
         />
 
         {/* "Done" Text */}
-        <Text style={[styles.toggleText, styles.doneText]}>Done</Text>
+        <Text
+          style={[
+            styles.toggleText,
+            styles.doneText,
+            { color: isToggled ? "#fff" : "#55a377" },
+          ]}
+        >
+          Done
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -55,7 +71,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   toggleContainer: {
-    width: "70%", // Adjust width as needed
+    width: "50%", // Adjust width as needed
     height: width * 0.12, // Adjust height as needed
     backgroundColor: "#e0e0e0", // Light gray background
     borderRadius: width * 0.06, // Rounded corners (50% of height for circular look)

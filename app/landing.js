@@ -12,8 +12,10 @@ import {
   View,
   ScrollView,
   Keyboard,
+  Animated,
+  Easing,
 } from "react-native";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
 import wave1 from "../assets/images/wave7.png";
 
@@ -138,6 +140,49 @@ export default function LandingScreen() {
     setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
   };
 
+  const animatedValue2 = useRef(new Animated.Value(0)).current;
+  const animatedValue = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        // Animated.delay(500),
+        Animated.timing(animatedValue2, {
+          toValue: -20, // Move up by 10 pixels
+          duration: 2000, // Duration of upward movement
+          easing: Easing.inOut(Easing.linear), // Smooth linear easing
+          useNativeDriver: false,
+        }),
+        Animated.timing(animatedValue2, {
+          toValue: 0, // Move down by 10 pixels
+          duration: 2000, // Duration of downward movement
+          easing: Easing.inOut(Easing.linear), // Smooth linear easing
+          useNativeDriver: false,
+        }),
+      ])
+    ).start();
+  }, [animatedValue2]);
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.delay(500),
+        Animated.timing(animatedValue, {
+          toValue: 20, // Move up by 10 pixels
+          duration: 2000, // Duration of upward movement
+          easing: Easing.inOut(Easing.linear), // Smooth linear easing
+          useNativeDriver: false,
+        }),
+        Animated.timing(animatedValue, {
+          toValue: 0, // Move down by 10 pixels
+          duration: 2000, // Duration of downward movement
+          easing: Easing.inOut(Easing.linear), // Smooth linear easing
+          useNativeDriver: false,
+        }),
+      ])
+    ).start();
+  }, [animatedValue]);
+
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   return (
     <View style={styles.mainContainer}>
@@ -147,17 +192,39 @@ export default function LandingScreen() {
       {!isDropdownVisible && (
         <View>
           <View style={styles.waveContainer2}>
-            <Image source={wave1} style={styles.waveImage} />
+            <Animated.Image
+              source={wave1}
+              style={[
+                styles.waveImage,
+                {
+                  transform: [
+                    { translateY: animatedValue2 }, // Continuous animation
+                    { translateX: animatedValue2 }, // Continuous animation
+                  ],
+                },
+              ]}
+            />
           </View>
           <View style={styles.waveContainer3}>
-            <Image source={wave1} style={styles.waveImage} />
+            <Animated.Image
+              source={wave1}
+              style={[
+                styles.waveImage,
+                {
+                  transform: [
+                    { translateY: animatedValue }, // Continuous animation
+                    { translateX: animatedValue }, // Continuous animation
+                  ],
+                },
+              ]}
+            />
           </View>
           <View style={styles.titleContainer} lightColor="#f5fbf3">
             <Text type="title" style={styles.titleText}>
               {" "}
               Daily Log
             </Text>
-            <Icon name="clock-o" size={30} color="#000" />
+            <Icon name="clock-o" size={30} color="#69707E" />
           </View>
 
           {/* Toggle between "Tasks" and "Done" */}
@@ -248,7 +315,8 @@ const styles = StyleSheet.create({
     width: "100%", // Cover the full width of the container
     height: "100%", // Cover the full height of the container
     resizeMode: "contain", // Ensure the image covers the container without distortion
-    borderRadius: 10, // Optional: Add rounded corners if needed
+    // borderRadius: 10, // Optional: Add rounded corners if needed
+    position: "absolute",
   },
   inputContainer: {
     flexDirection: "row",
@@ -298,7 +366,7 @@ const styles = StyleSheet.create({
     paddingVertical: "10%",
     backgroundColor: "#f5fbf3",
     marginTop: 50,
-    shadowColor: "#000",
+    shadowColor: "#69707E",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
@@ -315,7 +383,7 @@ const styles = StyleSheet.create({
     bottom: 90,
     alignSelf: "center",
     fontSize: 16,
-    shadowColor: "#000",
+    shadowColor: "#69707E",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
@@ -336,7 +404,7 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#000",
+    shadowColor: "#69707E",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
@@ -344,7 +412,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 25,
-    color: "#333",
+    color: "#69707E",
     fontWeight: "bold",
   },
 });
