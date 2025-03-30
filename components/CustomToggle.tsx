@@ -10,43 +10,54 @@ import {
 
 const { width } = Dimensions.get("window");
 
-const CustomToggle = () => {
-  const [isTaskDone, setIsTaskDone] = useState(false);
-  const [position] = useState(new Animated.Value(0)); // Position for sliding effect
+const CustomToggle = ({ isToggled, onToggle }) => {
+  const position = useState(
+    new Animated.Value(isToggled ? width * 0.25 : 0)
+  )[0];
 
-  // Toggle function that changes the task state and triggers the animation
-  const toggleSwitch = () => {
-    const newState = !isTaskDone; // Toggle the state
-
-    // Update the state first
-    setIsTaskDone(newState);
-
-    // Trigger the slide animation based on the new state
+  // Update the slide animation based on the new state
+  React.useEffect(() => {
     Animated.timing(position, {
-      toValue: newState ? width * 0.45 : 0, // If task is done, slide to 0.45 width, else go back to 0
-      duration: 300, // Duration of the animation
-      useNativeDriver: true, // Use native driver for better performance
+      toValue: isToggled ? width * 0.25 : 0,
+      duration: 300,
+      useNativeDriver: true,
     }).start();
-  };
+  }, [isToggled]);
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.toggleContainer} onPress={toggleSwitch}>
+      <TouchableOpacity style={styles.toggleContainer} onPress={onToggle}>
         {/* "Task" Text */}
-        <Text style={[styles.toggleText, styles.taskText]}>Task</Text>
+        <Text
+          style={[
+            styles.toggleText,
+            styles.taskText,
+            { color: isToggled ? "#55a377" : "#fff" },
+          ]}
+        >
+          To Do
+        </Text>
 
         {/* Animated Sliding Indicator */}
         <Animated.View
           style={[
             styles.toggleIndicator,
             {
-              transform: [{ translateX: position }], // Apply the slide animation
+              transform: [{ translateX: position }],
             },
           ]}
         />
 
         {/* "Done" Text */}
-        <Text style={[styles.toggleText, styles.doneText]}>Done</Text>
+        <Text
+          style={[
+            styles.toggleText,
+            styles.doneText,
+            { color: isToggled ? "#fff" : "#55a377" },
+          ]}
+        >
+          Done
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -60,7 +71,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   toggleContainer: {
-    width: "80%", // Adjust width as needed
+    width: "50%", // Adjust width as needed
     height: width * 0.12, // Adjust height as needed
     backgroundColor: "#e0e0e0", // Light gray background
     borderRadius: width * 0.06, // Rounded corners (50% of height for circular look)
@@ -82,13 +93,13 @@ const styles = StyleSheet.create({
   },
   doneText: {
     right: 0,
-    color: "#4caf50", // Green for the "Done" text
+    color: "#000", // Green for the "Done" text
   },
   toggleIndicator: {
     position: "absolute",
     width: "50%", // The width of the sliding indicator (half the width of the container)
     height: "100%",
-    backgroundColor: "#4caf50", // Green indicator color
+    backgroundColor: "#55a377", // Green indicator color
     borderRadius: width * 0.06, // Rounded corners for the indicator
     zIndex: -1, // Ensure the indicator is behind the text
   },
