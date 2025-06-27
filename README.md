@@ -1,50 +1,36 @@
-# Welcome to your Expo app 👋
+# AgeWell – Elderly Task & Health Reminder App 🧓📱
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native app (built with Expo) designed for elderly users to manage their medication, hydration, and daily tasks with ease.
 
-## Get started
+## 🛠️ Tech Stack
 
-1. Install dependencies
+- React Native + Expo
+- Local notifications with haptic/audio feedback
+- File-based routing (`app/` structure)
 
-   ```bash
-   npm install
-   ```
+## 🎯 MVP Highlights
 
-2. Start the app
+- Daily task checklist (with voice + vibration reminders)
+- Medication reminders via visual/audio popups
+- Water intake tracking
+- Caretaker access view for remote health data updates
+- Family event reminder support
 
-   ```bash
-    npx expo start
-   ```
+## 👥 Designed For
 
-In the output, you'll find options to open the app in a
+- Seniors with low tech proficiency or visual impairment
+- Caretakers needing remote access to user data
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 🔗 UI/UX Mockups
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- [Figma Wireframes](https://www.figma.com/design/Auh85YQvEdPRdrYq5wn0xP/AgeWell?node-id=93-763)
+- [Storyboard](https://www.figma.com/board/1NBXNtonFdzkzowCQWEK9X/AgeWell-Storyboard)
 
-## Get a fresh project
-
-When you're ready, run:
+## 🚀 Run the App
 
 ```bash
-npm run reset-project
+npm install
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+> Built with accessibility, clarity, and independence in mind.
