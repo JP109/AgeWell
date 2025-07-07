@@ -9,7 +9,6 @@ A React Native app (built with Expo) designed for elderly users to manage their 
 - File-based routing (`app/` structure)
 
 ## Screenshots
-![Profile Screen](./screenshots/profilescreen.png)
 ![Pill Screen](./screenshots/pillscreen.png)
 ![Tasks Screen](./screenshots/taskscreen.png)
 
