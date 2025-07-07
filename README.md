@@ -5,16 +5,20 @@ A React Native app (built with Expo) designed for elderly users to manage their 
 ## 🛠️ Tech Stack
 
 - React Native + Expo
-- Local notifications with haptic/audio feedback
+- Firebase notifications with haptic/audio feedback
 - File-based routing (`app/` structure)
+
+## Screenshots
+![Profile Screen](./screenshots/profilescreen.png)
+![Pill Screen](./screenshots/pillscreen.png)
+![Tasks Screen](./screenshots/taskscreen.png)
 
 ## 🎯 MVP Highlights
 
 - Daily task checklist (with voice + vibration reminders)
-- Medication reminders via visual/audio popups
+- Medication reminders via visual/audio notifications
 - Water intake tracking
 - Caretaker access view for remote health data updates
-- Family event reminder support
 
 ## 👥 Designed For
 
