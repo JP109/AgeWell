@@ -1,6 +1,8 @@
 // app/index.js
 
 import React from "react";
+import { LogBox } from "react-native";
+// import { AvatarProvider } from "./AvatarContext";
 import {
   View,
   Button,
@@ -11,25 +13,17 @@ import {
   Image,
 } from "react-native";
 import { useRouter } from "expo-router";
-import loginBg from "../assets/images/login-bg.jpg";
-import title from "../assets/images/title.jpg";
-import * as Notifications from 'expo-notifications';
-
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
+import loginBg from "../assets/images/welcome-logo.png";
+import title from "../assets/images/title.png";
+import { AvatarProvider } from "./AvatarContext";
 
 export default function LandingPage() {
+  LogBox.ignoreAllLogs();
   const router = useRouter();
 
   return (
+    // <AvatarProvider>
     <View style={styles.container}>
-      {/* <Text style={styles.title}>AgeWell</Text> */}
       <Image source={title} style={styles.titleImage} />
       <Image source={loginBg} style={styles.backgroundImage} />
       <TouchableOpacity
@@ -45,6 +39,7 @@ export default function LandingPage() {
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
     </View>
+    // </AvatarProvider>
   );
 }
 

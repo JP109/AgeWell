@@ -13,7 +13,7 @@ const { width } = Dimensions.get("window");
 
 const CustomToggleSmall = ({ onChange }) => {
   const [isTaskDone, setIsTaskDone] = useState(false);
-  const [position] = useState(new Animated.Value(0)); // Position for sliding effect
+  const [position] = useState(new Animated.Value(5)); // Initial position for the sliding indicator
 
   const toggleSwitch = () => {
     const newState = !isTaskDone;
@@ -21,23 +21,37 @@ const CustomToggleSmall = ({ onChange }) => {
     onChange(newState ? "clock" : "schedule"); // Notify parent to update the state
 
     Animated.timing(position, {
-      toValue: newState ? width * 0.45 : 0, // Slide effect based on state
-      duration: 300,
-      useNativeDriver: true,
+      toValue: newState ? 0 : 5, // Slide to the right when toggled on, left when toggled off
+      duration: 300, // Animation duration
+      useNativeDriver: true, // Enable native driver for better performance
     }).start();
   };
 
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.toggleContainer} onPress={toggleSwitch}>
-        <Text style={[styles.toggleText, styles.scheduleText]}>Schedule</Text>
+        <Text
+          style={[
+            styles.toggleText,
+            styles.scheduleText,
+            !isTaskDone ? { color: "#55A377" } : { color: "#fff" },
+          ]}
+        >
+          Schedule
+        </Text>
         <Animated.View
           style={[
-            styles.toggleIndicator,
+            isTaskDone
+              ? styles.toggleIndicatorSchedule
+              : styles.toggleIndicator,
             { transform: [{ translateX: position }] },
           ]}
         />
-        <MaterialIcons name="access-time" size={24} style={styles.clockIcon} />
+        <MaterialIcons
+          name="access-time"
+          size={24}
+          style={[styles.clockIcon, isTaskDone && { color: "#000" }]}
+        />
       </TouchableOpacity>
     </View>
   );
@@ -45,43 +59,56 @@ const CustomToggleSmall = ({ onChange }) => {
 
 const styles = StyleSheet.create({
   container: {
+    // marginTop: 150,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    width: 144,
+    zIndex: -91,
   },
   toggleContainer: {
-    width: "80%", // Adjust width as needed
+    width: "100%", // Adjust width as needed
     height: width * 0.12, // Adjust height as needed
-    backgroundColor: "#e0e0e0", // Light gray background
+    backgroundColor: "#f8f8f6", // Light gray background
     borderRadius: width * 0.06, // Rounded corners (50% of height for circular look)
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 8, // Space for the text inside
+    paddingHorizontal: 5, // Space for the text inside
     position: "relative",
   },
   toggleText: {
     position: "absolute",
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: "bold",
     color: "#333", // Default text color
-    width: "50%",
     textAlign: "center",
+    marginLeft: 20,
   },
   scheduleText: {
     left: 0,
   },
   clockIcon: {
     position: "absolute",
-    right: 15, // Slight adjustment to position the icon correctly
-    color: "#4caf50",
+    right: 17, // Slight adjustment to position the icon correctly
+    color: "#fff",
   },
   toggleIndicator: {
     position: "absolute",
-    width: "50%", // The width of the sliding indicator (half the width of the container)
-    height: "100%",
-    backgroundColor: "#4caf50", // Green indicator color
+    width: 35, // The width of the sliding indicator (half the width of the container)
+    height: 35,
+    backgroundColor: "#55A377", // Green indicator color
     borderRadius: width * 0.06, // Rounded corners for the indicator
     zIndex: -1, // Ensure the indicator is behind the text
+    left: 92,
+  },
+  toggleIndicatorSchedule: {
+    position: "absolute",
+    width: 86, // The width of the sliding indicator (half the width of the container)
+    height: 35,
+    backgroundColor: "#55A377", // Green indicator color
+    borderRadius: width * 0.06, // Rounded corners for the indicator
+    zIndex: -1, // Ensure the indicator is behind the text
+    left: 8,
   },
 });
 

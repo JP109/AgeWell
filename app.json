@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "AgeWell-app",
+    "name": "AgeWell",
     "slug": "agewell",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/app-icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -18,8 +18,15 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff",
-        "permissions": ["NOTIFICATIONS"]
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": ["NOTIFICATIONS"],
+      "googleServicesFile": "./google-services.json",
+      "package": "com.divyadevalla.agewell",
+      "notification": {
+        "android": {
+          "googleApiKey": "fcc0076a2b49a77a87197486dfe307259c2550db"
+        }
       }
     },
     "web": {
@@ -27,9 +34,7 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": [
-      "expo-router"
-    ],
+    "plugins": ["expo-router"],
     "experiments": {
       "typedRoutes": true
     },
